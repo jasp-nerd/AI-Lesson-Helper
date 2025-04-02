@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VU Amsterdam AI Assistant</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    /* Adjust the width of the popup */
+    body {
+      width: 400px;
+      min-width: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="images/icon128.png" alt="VU Amsterdam Logo" class="logo">
+      <h1>AI Assistant for Teachers</h1>
+    </header>
+
+    <div id="api-key-section">
+      <h2>API Key Setup</h2>
+      <p>Enter your OpenAI API key to use the Gemini 2.0 Flash model:</p>
+      <div class="input-group">
+        <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
+        <button id="save-api-key">Save</button>
+      </div>
+      <div id="api-status"></div>
+    </div>
+
+    <div id="features-section" class="hidden">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="summarize">Summarize</button>
+        <button class="tab-btn" data-tab="quiz">Quiz Questions</button>
+        <button class="tab-btn" data-tab="explain">Explain</button>
+        <button class="tab-btn" data-tab="suggest">Teaching Tips</button>
+      </div>
+
+      <div class="tab-content">
+        <div id="summarize" class="tab-pane active">
+          <h2>Summarize Content</h2>
+          <p>Generate a concise summary of the current page for lesson planning.</p>
+          <div class="input-group">
+            <select id="summary-length">
+              <option value="short">Short (1-2 paragraphs)</option>
+              <option value="medium" selected>Medium (3-4 paragraphs)</option>
+              <option value="long">Long (5+ paragraphs)</option>
+            </select>
+            <button id="generate-summary">Generate</button>
+          </div>
+        </div>
+
+        <div id="quiz" class="tab-pane">
+          <h2>Generate Quiz Questions</h2>
+          <p>Create quiz questions based on the current page content.</p>
+          <div class="input-group">
+            <select id="question-type">
+              <option value="multiple-choice">Multiple Choice</option>
+              <option value="true-false">True/False</option>
+              <option value="short-answer">Short Answer</option>
+              <option value="mixed" selected>Mixed</option>
+            </select>
+            <input type="number" id="question-count" min="1" max="10" value="5" placeholder="Number of questions">
+            <button id="generate-quiz">Generate</button>
+          </div>
+        </div>
+
+        <div id="explain" class="tab-pane">
+          <h2>Explain Complex Topics</h2>
+          <p>Simplify difficult concepts from the current page.</p>
+          <div class="input-group">
+            <input type="text" id="topic-input" placeholder="Enter specific topic or leave blank for auto-detection">
+            <select id="explanation-level">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <button id="generate-explanation">Explain</button>
+          </div>
+        </div>
+
+        <div id="suggest" class="tab-pane">
+          <h2>Teaching Suggestions</h2>
+          <p>Get teaching tips and activity ideas based on the current page content.</p>
+          <div class="input-group">
+            <select id="teaching-format">
+              <option value="lecture">Lecture</option>
+              <option value="discussion" selected>Discussion</option>
+              <option value="activity">Activity</option>
+              <option value="assessment">Assessment</option>
+            </select>
+            <button id="generate-suggestions">Get Suggestions</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="result-container">
+        <div id="loading" class="hidden">
+          <div class="spinner"></div>
+          <p>Processing your request...</p>
+        </div>
+        <div id="result-content"></div>
+        <div class="result-actions hidden">
+          <button id="copy-result">Copy to Clipboard</button>
+          <button id="download-result">Download</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Developed for Vrije Universiteit Amsterdam</p>
+    </footer>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

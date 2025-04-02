@@ -1,0 +1,107 @@
+/* Content script styles for VU Amsterdam AI Assistant */
+
+/* VU Amsterdam color scheme */
+:root {
+  --vu-blue: #0077B3;
+  --vu-dark-blue: #005A87;
+  --vu-light-blue: #4DA6FF;
+  --vu-orange: #FF6600;
+  --vu-green: #009966;
+  --vu-purple: #660099;
+  --vu-light-gray: #F2F2F2;
+  --vu-dark-gray: #333333;
+  --vu-white: #FFFFFF;
+}
+
+/* Highlight styles */
+.vu-ai-highlight {
+  background-color: var(--vu-blue);
+  color: var(--vu-white);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.vu-ai-highlight:hover {
+  background-color: var(--vu-dark-blue);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Annotation styles */
+.vu-ai-annotation {
+  position: absolute;
+  background-color: var(--vu-blue);
+  color: var(--vu-white);
+  padding: 8px 12px;
+  border-radius: 4px;
+  max-width: 300px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 10000;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.vu-ai-annotation::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent var(--vu-blue) transparent;
+}
+
+.vu-ai-annotation-close {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: var(--vu-white);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Tooltip styles */
+.vu-ai-tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted var(--vu-blue);
+  cursor: help;
+}
+
+.vu-ai-tooltip .vu-ai-tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: var(--vu-blue);
+  color: var(--vu-white);
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  position: absolute;
+  z-index: 10001;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.vu-ai-tooltip .vu-ai-tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--vu-blue) transparent transparent transparent;
+}
+
+.vu-ai-tooltip:hover .vu-ai-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
