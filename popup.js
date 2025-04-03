@@ -14,9 +14,9 @@ const translations = {
     
     // Tabs
     summarize: 'Summarize',
-    quiz: 'Quiz Questions',
+    quiz: 'Quiz',
     explain: 'Explain',
-    suggest: 'Teaching Tips',
+    suggest: 'Teaching',
     
     // Summarize tab
     summarizeTitle: 'Summarize Content',
@@ -65,6 +65,7 @@ const translations = {
     // Summarize prompts
     summaryPrompt: `Summarize the following content for a teacher's lesson planning. 
 Length: {length}.
+STRICTLY adhere to the specified length requirement - do not write more or less than requested.
 Focus on educational value, key concepts, and learning objectives.
 Organize the summary with clear sections and highlight important terminology.
 Include 2-3 potential discussion questions at the end.
@@ -121,13 +122,36 @@ IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only 
 {content}`,
     
     // System prompts
-    summarizeSystemPrompt: "You are an AI assistant for teachers. Summarize the content in a clear, concise way that would be useful for lesson planning. Focus on key concepts, main ideas, and educational value. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    summarizeSystemPrompt: "You are an AI assistant for teachers. Summarize the content in a clear, concise way that would be useful for lesson planning. It is CRITICAL that you follow the exact specified length requirements provided in the prompt (e.g., short, medium, or long). Focus on key concepts, main ideas, and educational value. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
     
     quizSystemPrompt: "You are an AI assistant for teachers. Generate quiz questions based on the content provided. Include a mix of question types and provide answers. Format the questions clearly with numbered items. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
     
     explainSystemPrompt: "You are an AI assistant for teachers. Explain complex concepts from the content in simpler terms that would be easy for teachers to use with their students. Break down difficult ideas into understandable components. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
     
-    suggestSystemPrompt: "You are an AI assistant for teachers. Provide teaching suggestions, activity ideas, and discussion points based on the content. Focus on practical, engaging approaches that would work well in a classroom setting. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax."
+    suggestSystemPrompt: "You are an AI assistant for teachers. Provide teaching suggestions, activity ideas, and discussion points based on the content. Focus on practical, engaging approaches that would work well in a classroom setting. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    
+    // Custom tab
+    custom: 'Custom',
+    customTitle: 'Custom Prompt',
+    customDesc: 'Ask any question or request about the current page content.',
+    customPlaceholder: 'Enter your custom prompt or question here...',
+    ask: 'Ask',
+    templateLabel: 'Quick templates:',
+    templateMainArgs: 'Main Arguments',
+    templateConceptMap: 'Concept Map',
+    templateImplications: 'Student Implications',
+    templateBiasAnalysis: 'Bias Analysis',
+    templateLearningStyles: 'Learning Styles',
+    templateReflectionQuestions: 'Reflection Questions',
+    
+    // Custom prompts
+    customPrompt: `Answer the following request based on the content of the page:
+{prompt}
+
+Here is the content to analyze:
+{content}`,
+    
+    customSystemPrompt: "You are an AI assistant for teachers. Answer the user's specific question or request about the content provided. Focus on educational relevance and provide clear, thorough responses. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax."
   },
   
   dutch: {
@@ -142,7 +166,7 @@ IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only 
     
     // Tabs
     summarize: 'Samenvatten',
-    quiz: 'Quizvragen',
+    quiz: 'Quiz',
     explain: 'Uitleggen',
     suggest: 'Lestips',
     
@@ -193,6 +217,7 @@ IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only 
     // Summarize prompts
     summaryPrompt: `Vat de volgende inhoud samen voor de lesplanning van een docent. 
 Lengte: {length}.
+Houd je STRIKT aan de opgegeven lengte-eis - schrijf niet meer of minder dan gevraagd.
 Focus op educatieve waarde, kernconcepten en leerdoelen.
 Organiseer de samenvatting met duidelijke secties en markeer belangrijke terminologie.
 Voeg aan het einde 2-3 potentiële discussievragen toe.
@@ -249,13 +274,36 @@ BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte t
 {content}`,
     
     // System prompts
-    summarizeSystemPrompt: "Je bent een AI-assistent voor docenten. Vat de inhoud samen op een duidelijke, beknopte manier die nuttig zou zijn voor lesplanning. Focus op kernconcepten, hoofdideeën en educatieve waarde. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    summarizeSystemPrompt: "Je bent een AI-assistent voor docenten. Vat de inhoud samen op een duidelijke, beknopte manier die nuttig zou zijn voor lesplanning. Het is CRUCIAAL dat je de exacte lengte-eisen volgt die in de prompt worden vermeld (bijv. kort, gemiddeld of lang). Focus op kernconcepten, hoofdideeën en educatieve waarde. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
     
     quizSystemPrompt: "Je bent een AI-assistent voor docenten. Genereer quizvragen op basis van de geleverde inhoud. Neem een mix van vraagtypes op en geef antwoorden. Formatteer de vragen duidelijk met genummerde items. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
     
     explainSystemPrompt: "Je bent een AI-assistent voor docenten. Leg complexe concepten uit de inhoud uit in eenvoudigere termen die docenten gemakkelijk met hun studenten kunnen gebruiken. Breek moeilijke ideeën op in begrijpelijke componenten. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
     
-    suggestSystemPrompt: "Je bent een AI-assistent voor docenten. Geef lesadviezen, activiteitenideeën en discussiepunten op basis van de inhoud. Focus op praktische, boeiende benaderingen die goed zouden werken in een klaslokaal. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis."
+    suggestSystemPrompt: "Je bent een AI-assistent voor docenten. Geef lesadviezen, activiteitenideeën en discussiepunten op basis van de inhoud. Focus op praktische, boeiende benaderingen die goed zouden werken in een klaslokaal. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    
+    // Custom tab
+    custom: 'Aangepast',
+    customTitle: 'Aangepaste Prompt',
+    customDesc: 'Stel een vraag of verzoek over de inhoud van de huidige pagina.',
+    customPlaceholder: 'Voer hier je aangepaste prompt of vraag in...',
+    ask: 'Vraag',
+    templateLabel: 'Snelle sjablonen:',
+    templateMainArgs: 'Hoofdargumenten',
+    templateConceptMap: 'Conceptkaart',
+    templateImplications: 'Gevolgen voor Studenten',
+    templateBiasAnalysis: 'Vooroordelenanalyse',
+    templateLearningStyles: 'Leerstijlen',
+    templateReflectionQuestions: 'Reflectievragen',
+    
+    // Custom prompts
+    customPrompt: `Beantwoord het volgende verzoek op basis van de inhoud van de pagina:
+{prompt}
+
+Hier is de inhoud om te analyseren:
+{content}`,
+    
+    customSystemPrompt: "Je bent een AI-assistent voor docenten. Beantwoord de specifieke vraag of het verzoek van de gebruiker over de gegeven inhoud. Focus op educatieve relevantie en geef duidelijke, grondige antwoorden. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis."
   }
 };
 
@@ -275,6 +323,9 @@ let activeTab = 'summarize';
 
 // Current language
 let currentLanguage = 'english';
+
+// Add to the DOM Elements section
+let generateCustomBtn, customPromptInput, templateButtons;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -303,6 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   languageToggleBtn = document.getElementById('language-toggle-btn');
   
+  generateCustomBtn = document.getElementById('generate-custom');
+  customPromptInput = document.getElementById('custom-prompt');
+  templateButtons = document.querySelectorAll('.template-btn');
+  
   // Check if API key is already saved
   checkApiKey();
   
@@ -324,6 +379,20 @@ document.addEventListener('DOMContentLoaded', () => {
   apiKeyInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       saveApiKey();
+    }
+  });
+  
+  // Custom prompt textarea enhancements
+  customPromptInput.addEventListener('input', () => {
+    // Auto-resize the textarea
+    customPromptInput.style.height = 'auto';
+    customPromptInput.style.height = (customPromptInput.scrollHeight) + 'px';
+    
+    // Apply has-content class for styling
+    if (customPromptInput.value.trim()) {
+      customPromptInput.classList.add('has-content');
+    } else {
+      customPromptInput.classList.remove('has-content');
     }
   });
   
@@ -375,6 +444,28 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Keyboard navigation
   document.addEventListener('keydown', handleKeyboardNavigation);
+  
+  // Add template button event listeners
+  templateButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      addButtonClickEffect(button);
+      const prompt = currentLanguage === 'english' ? 
+        button.dataset.prompt : button.dataset.promptNl;
+      insertTemplate(prompt);
+    });
+  });
+  
+  generateCustomBtn.addEventListener('click', () => {
+    addButtonClickEffect(generateCustomBtn);
+    generateCustomResponse();
+  });
+  
+  // Custom prompt keyboard shortcut
+  customPromptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      generateCustomResponse();
+    }
+  });
 });
 
 // Add visual click effect to buttons
@@ -541,6 +632,21 @@ function updateUILanguage() {
   
   // Update tooltips
   updateTooltips();
+  
+  // Update custom tab
+  document.querySelector('#custom h2').textContent = texts.customTitle;
+  document.querySelector('#custom p').textContent = texts.customDesc;
+  document.querySelector('#custom-prompt').placeholder = texts.customPlaceholder;
+  generateCustomBtn.textContent = texts.ask;
+  document.querySelector('.template-label').textContent = texts.templateLabel;
+  
+  // Update template button texts
+  document.querySelector('.template-btn[data-prompt="What are the main arguments presented in this text?"]').textContent = texts.templateMainArgs;
+  document.querySelector('.template-btn[data-prompt="Create a concept map based on this content."]').textContent = texts.templateConceptMap;
+  document.querySelector('.template-btn[data-prompt="What are the implications of this content for students?"]').textContent = texts.templateImplications;
+  document.querySelector('.template-btn[data-prompt="Identify any biases or limitations in this content."]').textContent = texts.templateBiasAnalysis;
+  document.querySelector('.template-btn[data-prompt="How could I adapt this content for different learning styles?"]').textContent = texts.templateLearningStyles;
+  document.querySelector('.template-btn[data-prompt="Create 3 reflection questions for students after studying this content."]').textContent = texts.templateReflectionQuestions;
 }
 
 // Update tooltips based on current language
@@ -556,7 +662,8 @@ function updateTooltips() {
     'generate-explanation': currentLanguage === 'english' ? 'Get explanations of complex topics' : 'Krijg uitleg over complexe onderwerpen',
     'generate-suggestions': currentLanguage === 'english' ? 'Get teaching activity suggestions' : 'Krijg suggesties voor lesactiviteiten',
     'copy-result': currentLanguage === 'english' ? 'Copy content to clipboard' : 'Kopieer inhoud naar klembord',
-    'download-result': currentLanguage === 'english' ? 'Download content as a text file' : 'Download inhoud als tekstbestand'
+    'download-result': currentLanguage === 'english' ? 'Download content as a text file' : 'Download inhoud als tekstbestand',
+    'generate-custom': currentLanguage === 'english' ? 'Generate response using your custom prompt' : 'Genereer een antwoord met je aangepaste prompt'
   };
   
   // Update all tooltips
@@ -641,7 +748,7 @@ function showFeaturesSection(animate = false) {
       featuresSection.style.transform = 'translateY(0)';
     }, 50);
   } else {
-    featuresSection.classList.remove('hidden');
+  featuresSection.classList.remove('hidden');
   }
 }
 
@@ -724,8 +831,41 @@ async function getCurrentTabContent() {
 async function generateSummary() {
   showLoading();
   
-  const summaryLength = document.getElementById('summary-length').value;
+  const summaryLengthOption = document.getElementById('summary-length').value;
   const pageContent = await getCurrentTabContent();
+  
+  // Define specific length requirements based on the selected option
+  let summaryLength;
+  if (currentLanguage === 'english') {
+    switch (summaryLengthOption) {
+      case 'short':
+        summaryLength = "Short (1-2 paragraphs, approximately 100-150 words total)";
+        break;
+      case 'medium':
+        summaryLength = "Medium (3-4 paragraphs, approximately 250-350 words total)";
+        break;
+      case 'long':
+        summaryLength = "Long (5+ paragraphs, approximately 500-700 words total)";
+        break;
+      default:
+        summaryLength = "Medium (3-4 paragraphs)";
+    }
+  } else {
+    // Dutch length descriptions
+    switch (summaryLengthOption) {
+      case 'short':
+        summaryLength = "Kort (1-2 alinea's, ongeveer 100-150 woorden in totaal)";
+        break;
+      case 'medium':
+        summaryLength = "Gemiddeld (3-4 alinea's, ongeveer 250-350 woorden in totaal)";
+        break;
+      case 'long':
+        summaryLength = "Lang (5+ alinea's, ongeveer 500-700 woorden in totaal)";
+        break;
+      default:
+        summaryLength = "Gemiddeld (3-4 alinea's)";
+    }
+  }
   
   // Create a more structured prompt using the enhanced content extraction
   let structuredContent = `Title: ${pageContent.title}\n`;
@@ -930,6 +1070,9 @@ async function callOpenAI(prompt, feature) {
         case 'suggest':
           systemPrompt = texts.suggestSystemPrompt;
           break;
+        case 'custom':
+          systemPrompt = texts.customSystemPrompt;
+          break;
       }
       
       // Set options for API call
@@ -979,7 +1122,7 @@ function displayResult(text) {
     
     // Show action buttons with animation
     setTimeout(() => {
-      resultActions.classList.remove('hidden');
+  resultActions.classList.remove('hidden');
       resultActions.style.opacity = '0';
       resultActions.style.transform = 'translateY(10px)';
       
@@ -1011,7 +1154,7 @@ function hideLoading() {
   loadingIndicator.style.opacity = '0';
   
   setTimeout(() => {
-    loadingIndicator.classList.add('hidden');
+  loadingIndicator.classList.add('hidden');
   }, 300);
 }
 
@@ -1073,4 +1216,68 @@ function downloadResult() {
     downloadResultBtn.classList.remove('success-action');
     downloadResultBtn.textContent = originalText;
   }, 2000);
+}
+
+// Add the function to insert template text into custom prompt textarea
+function insertTemplate(templateText) {
+  customPromptInput.value = templateText;
+  customPromptInput.focus();
+  // Set cursor position to the end of the text
+  customPromptInput.setSelectionRange(
+    templateText.length,
+    templateText.length
+  );
+  // Trigger the input event to apply any styling for filled inputs
+  const event = new Event('input', { bubbles: true });
+  customPromptInput.dispatchEvent(event);
+}
+
+// Add the function to generate a response based on custom prompt
+async function generateCustomResponse() {
+  const customPrompt = customPromptInput.value.trim();
+  
+  if (!customPrompt) {
+    shakeElement(customPromptInput);
+    return;
+  }
+  
+  showLoading();
+  
+  const pageContent = await getCurrentTabContent();
+  
+  // Create a structured content similar to other features
+  let structuredContent = `Title: ${pageContent.title}\n`;
+  
+  if (pageContent.metaDescription) {
+    structuredContent += `Description: ${pageContent.metaDescription}\n`;
+  }
+  
+  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
+    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
+  }
+  
+  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
+    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
+  } else {
+    structuredContent += `\nContent:\n${pageContent.text}\n`;
+  }
+  
+  // Include lists if available
+  if (pageContent.lists && pageContent.lists.length > 0) {
+    structuredContent += `\nLists:\n`;
+    pageContent.lists.forEach(list => {
+      structuredContent += `${list.type.toUpperCase()}:\n`;
+      list.items.forEach((item, index) => {
+        structuredContent += `${index + 1}. ${item}\n`;
+      });
+      structuredContent += `\n`;
+    });
+  }
+  
+  const texts = translations[currentLanguage];
+  const prompt = texts.customPrompt
+    .replace('{prompt}', customPrompt)
+    .replace('{content}', structuredContent);
+  
+  callOpenAI(prompt, 'custom');
 }

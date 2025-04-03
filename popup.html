@@ -8,8 +8,8 @@
   <style>
     /* Adjust the width of the popup */
     body {
-      width: 400px;
-      min-width: 400px;
+      width: 500px;
+      min-width: 500px;
     }
   </style>
 </head>
@@ -36,9 +36,10 @@
     <div id="features-section" class="hidden">
       <div class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="summarize" role="tab" aria-selected="true" aria-controls="summarize">Summarize</button>
-        <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" aria-controls="quiz">Quiz Questions</button>
+        <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" aria-controls="quiz">Quiz</button>
         <button class="tab-btn" data-tab="explain" role="tab" aria-selected="false" aria-controls="explain">Explain</button>
-        <button class="tab-btn" data-tab="suggest" role="tab" aria-selected="false" aria-controls="suggest">Teaching Tips</button>
+        <button class="tab-btn" data-tab="suggest" role="tab" aria-selected="false" aria-controls="suggest">Teaching</button>
+        <button class="tab-btn" data-tab="custom" role="tab" aria-selected="false" aria-controls="custom">Custom</button>
       </div>
 
       <div class="tab-content">
@@ -95,6 +96,38 @@
               <option value="assessment">Assessment</option>
             </select>
             <button id="generate-suggestions" data-tooltip="Get teaching activity suggestions">Get Suggestions</button>
+          </div>
+        </div>
+
+        <div id="custom" class="tab-pane" role="tabpanel" aria-labelledby="tab-custom">
+          <h2>Custom Prompt</h2>
+          <p>Ask any question or request about the current page content.</p>
+          <div class="input-group custom-prompt-group">
+            <textarea id="custom-prompt" placeholder="Enter your custom prompt or question here..." aria-label="Custom prompt" rows="3"></textarea>
+            <button id="generate-custom" data-tooltip="Generate response using your custom prompt">Ask</button>
+          </div>
+          <div class="prompt-templates">
+            <p class="template-label">Quick templates:</p>
+            <div class="template-buttons">
+              <button class="template-btn" 
+                data-prompt="What are the main arguments presented in this text?" 
+                data-prompt-nl="Wat zijn de belangrijkste argumenten die in deze tekst worden gepresenteerd?">Main Arguments</button>
+              <button class="template-btn" 
+                data-prompt="Create a concept map based on this content." 
+                data-prompt-nl="Maak een conceptkaart op basis van deze inhoud.">Concept Map</button>
+              <button class="template-btn" 
+                data-prompt="What are the implications of this content for students?" 
+                data-prompt-nl="Wat zijn de implicaties van deze inhoud voor studenten?">Student Implications</button>
+              <button class="template-btn" 
+                data-prompt="Identify any biases or limitations in this content." 
+                data-prompt-nl="Identificeer eventuele vooroordelen of beperkingen in deze inhoud.">Bias Analysis</button>
+              <button class="template-btn" 
+                data-prompt="How could I adapt this content for different learning styles?" 
+                data-prompt-nl="Hoe kan ik deze inhoud aanpassen voor verschillende leerstijlen?">Learning Styles</button>
+              <button class="template-btn" 
+                data-prompt="Create 3 reflection questions for students after studying this content." 
+                data-prompt-nl="Maak 3 reflectievragen voor studenten na het bestuderen van deze inhoud.">Reflection Questions</button>
+            </div>
           </div>
         </div>
       </div>
