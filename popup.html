@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>VU Amsterdam AI Assistant</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="popup.css">
   <style>
     /* Adjust the width of the popup */
@@ -17,93 +18,96 @@
     <header>
       <img src="images/icon128.png" alt="VU Amsterdam Logo" class="logo">
       <h1>AI Assistant for Teachers</h1>
+      <div class="language-toggle">
+        <button id="language-toggle-btn" title="Switch language" aria-label="Switch language" data-tooltip="Change language between English and Dutch">EN</button>
+      </div>
     </header>
 
     <div id="api-key-section">
       <h2>API Key Setup</h2>
       <p>Enter your OpenAI API key to use the Gemini 2.0 Flash model:</p>
       <div class="input-group">
-        <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
-        <button id="save-api-key">Save</button>
+        <input type="password" id="api-key" placeholder="Enter your OpenAI API key" aria-label="OpenAI API key" autocomplete="off">
+        <button id="save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
       </div>
-      <div id="api-status"></div>
+      <div id="api-status" role="status"></div>
     </div>
 
     <div id="features-section" class="hidden">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="summarize">Summarize</button>
-        <button class="tab-btn" data-tab="quiz">Quiz Questions</button>
-        <button class="tab-btn" data-tab="explain">Explain</button>
-        <button class="tab-btn" data-tab="suggest">Teaching Tips</button>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="summarize" role="tab" aria-selected="true" aria-controls="summarize">Summarize</button>
+        <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" aria-controls="quiz">Quiz Questions</button>
+        <button class="tab-btn" data-tab="explain" role="tab" aria-selected="false" aria-controls="explain">Explain</button>
+        <button class="tab-btn" data-tab="suggest" role="tab" aria-selected="false" aria-controls="suggest">Teaching Tips</button>
       </div>
 
       <div class="tab-content">
-        <div id="summarize" class="tab-pane active">
+        <div id="summarize" class="tab-pane active" role="tabpanel" aria-labelledby="tab-summarize">
           <h2>Summarize Content</h2>
           <p>Generate a concise summary of the current page for lesson planning.</p>
           <div class="input-group">
-            <select id="summary-length">
+            <select id="summary-length" aria-label="Summary length">
               <option value="short">Short (1-2 paragraphs)</option>
               <option value="medium" selected>Medium (3-4 paragraphs)</option>
               <option value="long">Long (5+ paragraphs)</option>
             </select>
-            <button id="generate-summary">Generate</button>
+            <button id="generate-summary" data-tooltip="Generate a summary of the current page">Generate</button>
           </div>
         </div>
 
-        <div id="quiz" class="tab-pane">
+        <div id="quiz" class="tab-pane" role="tabpanel" aria-labelledby="tab-quiz">
           <h2>Generate Quiz Questions</h2>
           <p>Create quiz questions based on the current page content.</p>
           <div class="input-group">
-            <select id="question-type">
+            <select id="question-type" aria-label="Question type">
               <option value="multiple-choice">Multiple Choice</option>
               <option value="true-false">True/False</option>
               <option value="short-answer">Short Answer</option>
               <option value="mixed" selected>Mixed</option>
             </select>
-            <input type="number" id="question-count" min="1" max="10" value="5" placeholder="Number of questions">
-            <button id="generate-quiz">Generate</button>
+            <input type="number" id="question-count" min="1" max="10" value="5" placeholder="Number of questions" aria-label="Number of questions">
+            <button id="generate-quiz" data-tooltip="Generate quiz questions from page content">Generate</button>
           </div>
         </div>
 
-        <div id="explain" class="tab-pane">
+        <div id="explain" class="tab-pane" role="tabpanel" aria-labelledby="tab-explain">
           <h2>Explain Complex Topics</h2>
           <p>Simplify difficult concepts from the current page.</p>
           <div class="input-group">
-            <input type="text" id="topic-input" placeholder="Enter specific topic or leave blank for auto-detection">
-            <select id="explanation-level">
+            <input type="text" id="topic-input" placeholder="Enter specific topic or leave blank for auto-detection" aria-label="Topic to explain">
+            <select id="explanation-level" aria-label="Explanation level">
               <option value="beginner">Beginner</option>
               <option value="intermediate" selected>Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
-            <button id="generate-explanation">Explain</button>
+            <button id="generate-explanation" data-tooltip="Get explanations of complex topics">Explain</button>
           </div>
         </div>
 
-        <div id="suggest" class="tab-pane">
+        <div id="suggest" class="tab-pane" role="tabpanel" aria-labelledby="tab-suggest">
           <h2>Teaching Suggestions</h2>
           <p>Get teaching tips and activity ideas based on the current page content.</p>
           <div class="input-group">
-            <select id="teaching-format">
+            <select id="teaching-format" aria-label="Teaching format">
               <option value="lecture">Lecture</option>
               <option value="discussion" selected>Discussion</option>
               <option value="activity">Activity</option>
               <option value="assessment">Assessment</option>
             </select>
-            <button id="generate-suggestions">Get Suggestions</button>
+            <button id="generate-suggestions" data-tooltip="Get teaching activity suggestions">Get Suggestions</button>
           </div>
         </div>
       </div>
 
       <div id="result-container">
-        <div id="loading" class="hidden">
-          <div class="spinner"></div>
+        <div id="loading" class="hidden" aria-live="polite">
+          <div class="spinner" role="status" aria-label="Loading"></div>
           <p>Processing your request...</p>
         </div>
-        <div id="result-content"></div>
+        <div id="result-content" aria-live="polite"></div>
         <div class="result-actions hidden">
-          <button id="copy-result">Copy to Clipboard</button>
-          <button id="download-result">Download</button>
+          <button id="copy-result" data-tooltip="Copy content to clipboard">Copy to Clipboard</button>
+          <button id="download-result" data-tooltip="Download content as a text file">Download</button>
         </div>
       </div>
     </div>

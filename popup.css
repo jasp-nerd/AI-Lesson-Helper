@@ -11,12 +11,19 @@
   --vu-light-gray: #F2F2F2;
   --vu-dark-gray: #333333;
   --vu-white: #FFFFFF;
+  
+  /* Added subtle shades */
+  --vu-blue-hover: #0088cc;
+  --vu-orange-hover: #ff7d33;
+  --vu-shadow: rgba(0, 0, 0, 0.1);
+  --vu-focus-ring: rgba(0, 119, 179, 0.4);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: all 0.2s ease-in-out;
 }
 
 body {
@@ -26,22 +33,24 @@ body {
   width: 450px;
   min-width: 450px;
   min-height: 500px;
+  line-height: 1.5;
 }
 
 .container {
-  padding: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
   background-image: linear-gradient(to bottom right, rgba(0, 119, 179, 0.05), rgba(0, 119, 179, 0.1));
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px var(--vu-shadow);
 }
 
 header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 18px;
   border-bottom: 2px solid var(--vu-blue);
   position: relative;
 }
@@ -54,69 +63,117 @@ header::after {
   width: 30%;
   height: 2px;
   background-color: var(--vu-orange);
+  transition: width 0.3s ease;
+}
+
+header:hover::after {
+  width: 40%;
 }
 
 .logo {
-  height: 40px;
+  height: 45px;
   margin-right: 15px;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--vu-blue);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 h2 {
-  font-size: 16px;
-  margin-bottom: 10px;
+  font-size: 17px;
+  margin-bottom: 12px;
   color: var(--vu-dark-blue);
   border-left: 3px solid var(--vu-blue);
-  padding-left: 8px;
+  padding-left: 10px;
+  font-weight: 600;
+  transition: border-color 0.2s ease, padding-left 0.2s ease;
+}
+
+h2:hover {
+  border-color: var(--vu-orange);
+  padding-left: 12px;
 }
 
 p {
   margin-bottom: 15px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: rgba(51, 51, 51, 0.9);
 }
 
 .input-group {
   display: flex;
-  margin-bottom: 15px;
-  gap: 8px;
+  margin-bottom: 18px;
+  gap: 10px;
 }
 
 input, select {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  background-color: var(--vu-white);
+}
+
+input:hover, select:hover {
+  border-color: var(--vu-blue);
+  transform: translateY(-1px);
 }
 
 input:focus, select:focus {
   outline: none;
   border-color: var(--vu-blue);
-  box-shadow: 0 0 0 2px rgba(0, 119, 179, 0.2);
+  box-shadow: 0 0 0 3px var(--vu-focus-ring);
+  transform: translateY(-1px);
 }
 
 button {
   background-color: var(--vu-blue);
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 12px 18px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s, transform 0.1s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.2s;
 }
 
 button:hover {
-  background-color: var(--vu-dark-blue);
+  background-color: var(--vu-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover::after {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 button:active {
@@ -128,17 +185,28 @@ button:active {
   display: none !important;
 }
 
+#api-key-section {
+  background-color: rgba(242, 242, 242, 0.5);
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-left: 3px solid var(--vu-blue);
+}
+
 #api-status {
-  font-size: 12px;
-  margin-top: 5px;
+  font-size: 13px;
+  margin-top: 8px;
   min-height: 20px;
   padding-left: 5px;
+  font-weight: 500;
+  transition: opacity 0.3s;
 }
 
 .tabs {
   display: flex;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -156,71 +224,141 @@ button:active {
   background-color: var(--vu-light-gray);
   color: var(--vu-dark-gray);
   border: none;
-  padding: 10px 12px;
-  margin-right: 2px;
-  border-radius: 4px 4px 0 0;
+  padding: 12px 16px;
+  margin-right: 3px;
+  border-radius: 6px 6px 0 0;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   position: relative;
   z-index: 1;
   box-shadow: none;
+  transition: background-color 0.2s, color 0.2s, transform 0.1s;
+}
+
+.tab-btn:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px) scale(1.03);
 }
 
 .tab-btn.active {
   background-color: var(--vu-blue);
   color: white;
+  font-weight: 600;
+}
+
+.tab-btn.active:hover {
+  background-color: var(--vu-blue-hover);
 }
 
 .tab-pane {
   display: none;
   padding: 15px 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
 }
 
 .tab-pane.active {
   display: block;
-  animation: fadeIn 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+  animation: none; /* Disable the previous animation as we're using our own */
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 #result-container {
-  margin-top: 20px;
-  padding: 15px;
+  margin-top: 25px;
+  padding: 20px;
   background-color: var(--vu-light-gray);
-  border-radius: 6px;
-  min-height: 150px;
-  max-height: 300px;
+  border-radius: 8px;
+  min-height: 180px;
+  max-height: 350px;
   overflow-y: auto;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
   border-left: 3px solid var(--vu-blue);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  scrollbar-width: thin;
+  scrollbar-color: var(--vu-blue) var(--vu-light-gray);
+}
+
+#result-container:hover {
+  border-color: var(--vu-orange);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+
+#result-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+#result-container::-webkit-scrollbar-track {
+  background: var(--vu-light-gray);
+  border-radius: 4px;
+}
+
+#result-container::-webkit-scrollbar-thumb {
+  background-color: var(--vu-blue);
+  border-radius: 4px;
+}
+
+#result-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--vu-dark-blue);
 }
 
 #result-content {
   white-space: pre-wrap;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: rgba(51, 51, 51, 0.95);
+  transition: opacity 0.3s ease;
 }
 
 .result-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
+  margin-top: 18px;
+  gap: 15px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .result-actions button {
   flex: 1;
-  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .result-actions button:first-child {
-  margin-left: 0;
+  background-color: var(--vu-blue);
 }
 
 .result-actions button:last-child {
-  margin-right: 0;
+  background-color: var(--vu-orange);
+}
+
+.result-actions button:last-child:hover {
+  background-color: var(--vu-orange-hover);
+}
+
+/* Add icons for action buttons */
+.result-actions button::before {
+  font-family: Arial, sans-serif;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+#copy-result::before {
+  content: "📋";
+}
+
+#download-result::before {
+  content: "💾";
 }
 
 #loading {
@@ -228,17 +366,19 @@ button:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 120px;
+  height: 150px;
+  transition: opacity 0.3s ease;
 }
 
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
   border-top: 4px solid var(--vu-blue);
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 @keyframes spin {
@@ -248,7 +388,7 @@ button:active {
 
 footer {
   margin-top: auto;
-  padding-top: 15px;
+  padding-top: 18px;
   text-align: center;
   font-size: 12px;
   color: var(--vu-dark-gray);
@@ -264,6 +404,11 @@ footer::before {
   width: 40%;
   height: 1px;
   background-color: var(--vu-blue);
+  transition: width 0.3s ease;
+}
+
+footer:hover::before {
+  width: 60%;
 }
 
 /* Responsive adjustments */
@@ -303,4 +448,223 @@ button:focus:not(:focus-visible) {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Tooltip styles */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--vu-dark-gray);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+[data-tooltip]:hover::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--vu-dark-gray) transparent transparent transparent;
+}
+
+/* Language toggle button */
+.language-toggle {
+  margin-left: auto;
+}
+
+#language-toggle-btn {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background-color: var(--vu-blue);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+#language-toggle-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+#language-toggle-btn:hover::before {
+  left: 100%;
+}
+
+#language-toggle-btn:hover {
+  background-color: var(--vu-dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+#language-toggle-btn:active {
+  transform: translateY(1px);
+}
+
+#language-toggle-btn.dutch {
+  background-color: var(--vu-orange);
+}
+
+#language-toggle-btn.dutch:hover {
+  background-color: var(--vu-orange-hover);
+}
+
+/* Loading text pulse animation */
+#loading p {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgba(0, 119, 179, 0.2);
+  color: var(--vu-dark-blue);
+}
+
+/* Smooth transitions between states */
+.container, input, button, select, .tab-btn {
+  will-change: transform;
+}
+
+/* Additional polish for inputs */
+input:not(:placeholder-shown) {
+  border-color: var(--vu-blue);
+}
+
+select:focus {
+  border-right-width: 1px;
+}
+
+/* Status message styling */
+#api-status.success {
+  color: var(--vu-green);
+}
+
+#api-status.error {
+  color: #dc3545;
+}
+
+#api-status.info {
+  color: var(--vu-blue);
+}
+
+/* Add the new animations and effects */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes button-click {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes success-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 153, 102, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 153, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 153, 102, 0); }
+}
+
+@keyframes error-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Add to existing CSS */
+.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.button-click {
+  animation: button-click 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.success-action {
+  background-color: var(--vu-green) !important;
+  animation: success-pulse 1s forwards;
+}
+
+.error-action {
+  background-color: #dc3545 !important;
+  animation: error-pulse 1s forwards;
+}
+
+.language-transition {
+  transition: opacity 0.3s ease;
+  opacity: 0.5;
+}
+
+/* Loading button effects */
+button.loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent !important;
+}
+
+button.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: -0.6em;
+  margin-left: -0.6em;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Error text styling */
+.error-text {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* Input with content styling */
+input.has-content {
+  border-color: var(--vu-blue);
+  background-color: rgba(0, 119, 179, 0.03);
+}
+
+/* Features section transitions */
+#features-section {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
