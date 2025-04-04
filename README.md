@@ -2,8 +2,7 @@
 
 A Chrome extension that leverages AI to help teachers quickly extract educational value from web content. The assistant analyzes web pages and provides summaries, quiz questions, simplified explanations, and teaching suggestions to support educational activities.
 
-![Example Image](https://imgur.com/a/RdfjHCt)
-
+![Example Image](https://i.imgur.com/9qX7e7c.png)
 ## Features
 
 ### Content Summarization
@@ -32,7 +31,7 @@ Get teaching tips and activity ideas based on web content for different formats:
 - Activity
 - Assessment
 
-![Example Image](https://imgur.com/a/Gsqt3wV)
+![Example Image](https://i.imgur.com/J72b6Zd.png)
 
 ### Additional Features
 - **Intelligent Content Extraction**: Automatically identifies headings, paragraphs, and lists from web pages
