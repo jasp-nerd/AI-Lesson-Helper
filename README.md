@@ -2,6 +2,8 @@
 
 A Chrome extension that leverages AI to help teachers quickly extract educational value from web content. The assistant analyzes web pages and provides summaries, quiz questions, simplified explanations, and teaching suggestions to support educational activities.
 
+![Example Image](https://imgur.com/a/RdfjHCt)
+
 ## Features
 
 ### Content Summarization
@@ -29,6 +31,8 @@ Get teaching tips and activity ideas based on web content for different formats:
 - Discussion
 - Activity
 - Assessment
+
+![Example Image](https://imgur.com/a/Gsqt3wV)
 
 ### Additional Features
 - **Intelligent Content Extraction**: Automatically identifies headings, paragraphs, and lists from web pages
@@ -71,20 +75,6 @@ Once published:
 5. Click the appropriate "Generate" button
 6. View the results, then copy or download as needed
 
-## Technical Details
-
-### Architecture
-- **Background Script**: Handles API communication
-- **Content Script**: Extracts content from web pages and applies highlighting
-- **Popup Interface**: Provides the user interface and controls
-- **API Integration**: Uses the Gemini 2.0 Flash model via API
-
-### Privacy & Security
-- API keys are stored locally in Chrome's storage
-- Web page content is processed via the API
-- No data persistence beyond local browser storage
-- No tracking or analytics included
-
 ## Development
 
 ### Project Structure
@@ -98,14 +88,6 @@ Once published:
 - Chrome Browser
 - OpenAI API key with access to Gemini models
 - Internet connection for API communication
-
-## Support
-
-If you encounter issues:
-1. Verify your API key is correct
-2. Check that the webpage content is accessible
-3. Try refreshing the page or restarting Chrome
-4. Contact VU Amsterdam IT support for assistance
 
 ## Credits
 
