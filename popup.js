@@ -80,7 +80,8 @@ For multiple choice questions, provide 4 options with one correct answer.
 For true/false questions, clearly state whether the statement is true or false.
 For short answer questions, provide a model answer.
 Ensure questions test different cognitive levels (knowledge, comprehension, application, analysis).
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.
+IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax. 
+IMPORTANT: Only make {type} Questions
 
 {content}`,
     
@@ -233,6 +234,7 @@ Voor waar/onwaar-vragen, geef duidelijk aan of de stelling waar of onwaar is.
 Voor kort-antwoordvragen, geef een modelantwoord.
 Zorg ervoor dat vragen verschillende cognitieve niveaus testen (kennis, begrip, toepassing, analyse).
 BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+BELANGRIJK: Maak alleen {type} soort vragen.
 
 {content}`,
     

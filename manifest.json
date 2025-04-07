@@ -29,7 +29,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["images/*"],
+      "resources": [
+        "images/*",
+        "popup.html",
+        "popup.css",
+        "popup.js",
+        "api.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
