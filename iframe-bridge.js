@@ -24,6 +24,13 @@ window.addEventListener('message', (event) => {
         window.receivePageContentFromParent(event.data.content);
       }
       break;
+    case 'changeLanguage':
+      if (event.data.language) {
+        chrome.storage.local.set({ language: event.data.language }, () => {
+          // Optionally, broadcast the change to all open popups if needed
+        });
+      }
+      break;
     default:
       break;
   }

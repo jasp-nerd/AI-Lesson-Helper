@@ -34,6 +34,14 @@ const translations = {
     shortAnswer: 'Short Answer',
     mixed: 'Mixed',
     questionCount: 'Number of questions',
+    difficulty: 'Difficulty',
+    level: 'Academic Level',
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    primary: 'Primary',
+    secondary: 'Secondary',
+    university: 'University',
     
     // Explain tab
     explainTitle: 'Explain Complex Topics',
@@ -63,30 +71,46 @@ const translations = {
     
     // API Prompts
     // Summarize prompts
-    summaryPrompt: `Summarize the following content for a teacher's lesson planning. 
+    summaryPrompt: `Summarize the following content for a teacher's lesson planning.
+
 Length: {length}.
-STRICTLY adhere to the specified length requirement - do not write more or less than requested.
-Focus on educational value, key concepts, and learning objectives.
-Organize the summary with clear sections using markdown headings (##) and highlight important terminology using **bold**.
-Identify 2-3 key learning outcomes students should achieve.
-Include 2-3 potential discussion questions that promote critical thinking at the end.
-Use a bullet list for key points and concepts to enhance scannability for busy teachers.
+STRICTLY adhere to the specified length requirement:
+- Short: 1-2 paragraphs (approx. 100-150 words)
+- Medium: 3-4 paragraphs (approx. 250-350 words)
+- Long: 5+ paragraphs
+
+The summary must be structured for university-level comprehension, focusing on educational value, key concepts, and learning objectives. Use clear sections with markdown headings (##), highlight important terminology in **bold**, and ensure clarity for teaching purposes.
+
+Include:
+- 2-3 key learning outcomes students should achieve
+- 2-3 potential discussion questions that promote critical thinking at the end
+- A bullet list for key points and concepts to enhance scannability for busy teachers
 
 {content}`,
     
     // Quiz prompts
-    quizPrompt: `Create {count} {type} quiz questions based on the following content tailored for classroom assessment.
-Format the questions using markdown for clarity:
-- Use **bold** for question numbers
-- Organize multiple choice options as a numbered list
-- Use *italics* for the correct answer explanation
+    quizPrompt: `Create {count} {type} quiz questions based on the following content for classroom assessment.
 
-For multiple choice questions, provide 4 options with one correct answer.
-For true/false questions, clearly state whether the statement is true or false.
-For short answer questions, provide a model answer.
-Craft questions that test different cognitive levels (knowledge, comprehension, application, analysis) following Bloom's taxonomy.
-Align each question with specific learning objectives where possible.
-IMPORTANT: Only create {type} Questions.
+Requirements:
+- Strictly adhere to the requested question type: only {type} questions
+- Assign a difficulty level to each question: low, medium, or hard
+- Format using markdown for clarity:
+  - **Bold** for question numbers
+  - Numbered list for multiple choice options
+  - *Italics* for correct answer explanations
+
+Question Format:
+- Multiple Choice: 4 options, one correct answer
+- True/False: clearly state true or false
+- Short Answer: provide a model answer
+
+Questions should target a range of cognitive levels (knowledge, comprehension, application, analysis) per Bloom's taxonomy, and align with specific learning objectives where possible.
+
+IMPORTANT: Strictly follow this format for each question:
+1. The question (with difficulty level and academic level in parentheses)
+2. For MC: numbered options
+3. The answer (clearly indicated)
+4. *Explanation* (in italics)
 
 {content}`,
     
@@ -250,6 +274,14 @@ Here is the content to analyze:
     shortAnswer: 'Kort Antwoord',
     mixed: 'Gemengd',
     questionCount: 'Aantal vragen',
+    difficulty: 'Moeilijkheidsgraad',
+    level: 'Onderwijsniveau',
+    easy: 'Makkelijk',
+    medium: 'Gemiddeld',
+    hard: 'Moeilijk',
+    primary: 'Primair',
+    secondary: 'Voortgezet',
+    university: 'Universiteit',
     
     // Explain tab
     explainTitle: 'Complexe Onderwerpen Uitleggen',
@@ -666,18 +698,23 @@ function checkLanguagePreference() {
 // Toggle between English and Dutch
 function toggleLanguage() {
   currentLanguage = currentLanguage === 'english' ? 'dutch' : 'english';
-  
+
   // Save language preference
   chrome.storage.local.set({ language: currentLanguage });
-  
+
+  // If running inside an iframe, notify parent window (content script)
+  if (window.self !== window.top) {
+    window.parent.postMessage({ action: 'changeLanguage', language: currentLanguage }, '*');
+  }
+
   // Update UI with animation
   document.body.classList.add('language-transition');
-  
+
   setTimeout(() => {
     // Update UI
     updateLanguageToggleButton();
     updateUILanguage();
-    
+
     setTimeout(() => {
       document.body.classList.remove('language-transition');
     }, 300);
@@ -699,6 +736,21 @@ function updateLanguageToggleButton() {
 function updateUILanguage() {
   const texts = translations[currentLanguage];
   
+  // Remove any language/opacity transition classes to prevent stuck opacity
+  document.body.classList.remove('language-transition');
+  document.querySelectorAll('.content-pane, .tab-pane, .container').forEach(el => {
+    el.classList.remove('language-transition');
+    el.style.opacity = '';
+  });
+
+  // Optionally force full opacity after language switch
+  setTimeout(() => {
+    document.body.style.opacity = '1';
+    document.querySelectorAll('.content-pane, .tab-pane, .container').forEach(el => {
+      el.style.opacity = '1';
+    });
+  }, 10);
+
   // Update page title
   document.querySelector('h1').textContent = texts.title;
   
@@ -742,6 +794,14 @@ function updateUILanguage() {
   document.querySelector('#question-type option[value="short-answer"]').textContent = texts.shortAnswer;
   document.querySelector('#question-type option[value="mixed"]').textContent = texts.mixed;
   document.querySelector('#question-count').placeholder = texts.questionCount;
+  document.querySelector('#quiz-difficulty').placeholder = texts.difficulty;
+  document.querySelector('#quiz-level').placeholder = texts.level;
+  document.querySelector('#quiz-difficulty option[value="easy"]').textContent = texts.easy;
+  document.querySelector('#quiz-difficulty option[value="medium"]').textContent = texts.medium;
+  document.querySelector('#quiz-difficulty option[value="hard"]').textContent = texts.hard;
+  document.querySelector('#quiz-level option[value="primary"]').textContent = texts.primary;
+  document.querySelector('#quiz-level option[value="secondary"]').textContent = texts.secondary;
+  document.querySelector('#quiz-level option[value="university"]').textContent = texts.university;
   generateQuizBtn.textContent = texts.generate;
   
   // Explain tab
@@ -1043,6 +1103,8 @@ async function generateQuiz() {
   
   const questionType = document.getElementById('question-type').value;
   const questionCount = document.getElementById('question-count').value;
+  const quizDifficulty = document.getElementById('quiz-difficulty').value;
+  const quizLevel = document.getElementById('quiz-level').value;
   const pageContent = await getCurrentTabContent();
   
   // Create a more structured prompt using the enhanced content extraction
@@ -1071,11 +1133,15 @@ async function generateQuiz() {
   }
   
   const texts = translations[currentLanguage];
-  const prompt = texts.quizPrompt
+  let prompt = texts.quizPrompt
     .replace('{count}', questionCount)
     .replace('{type}', questionType)
     .replace('{content}', structuredContent);
-  
+
+  // Add selected difficulty and academic level to the prompt instruction
+  prompt = `All questions must be at the {difficulty} difficulty and suitable for {level} academic level.\n\n` + prompt;
+  prompt = prompt.replace('{difficulty}', quizDifficulty).replace('{level}', quizLevel);
+
   callOpenAI(prompt, 'quiz');
 }
 

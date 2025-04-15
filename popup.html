@@ -67,6 +67,16 @@
               <option value="mixed" selected>Mixed</option>
             </select>
             <input type="number" id="question-count" min="1" max="10" value="5" placeholder="Number of questions" aria-label="Number of questions">
+            <select id="quiz-difficulty" aria-label="Quiz difficulty">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <select id="quiz-level" aria-label="Quiz academic level">
+              <option value="university" selected>University Level</option>
+              <option value="secondary">Secondary/High School</option>
+              <option value="primary">Primary School</option>
+            </select>
             <button id="generate-quiz" data-tooltip="Generate quiz questions from page content">Generate</button>
           </div>
         </div>
