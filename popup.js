@@ -67,69 +67,130 @@ const translations = {
 Length: {length}.
 STRICTLY adhere to the specified length requirement - do not write more or less than requested.
 Focus on educational value, key concepts, and learning objectives.
-Organize the summary with clear sections and highlight important terminology.
-Include 2-3 potential discussion questions at the end.
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.
+Organize the summary with clear sections using markdown headings (##) and highlight important terminology using **bold**.
+Identify 2-3 key learning outcomes students should achieve.
+Include 2-3 potential discussion questions that promote critical thinking at the end.
+Use a bullet list for key points and concepts to enhance scannability for busy teachers.
 
 {content}`,
     
     // Quiz prompts
-    quizPrompt: `Create {count} {type} quiz questions based on the following content.
-Include answers for each question.
+    quizPrompt: `Create {count} {type} quiz questions based on the following content tailored for classroom assessment.
+Format the questions using markdown for clarity:
+- Use **bold** for question numbers
+- Organize multiple choice options as a numbered list
+- Use *italics* for the correct answer explanation
+
 For multiple choice questions, provide 4 options with one correct answer.
 For true/false questions, clearly state whether the statement is true or false.
 For short answer questions, provide a model answer.
-Ensure questions test different cognitive levels (knowledge, comprehension, application, analysis).
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax. 
-IMPORTANT: Only make {type} Questions
+Craft questions that test different cognitive levels (knowledge, comprehension, application, analysis) following Bloom's taxonomy.
+Align each question with specific learning objectives where possible.
+IMPORTANT: Only create {type} Questions.
 
 {content}`,
     
     // Explain prompts
-    explainTopicPrompt: `Explain the concept of "{topic}" from the following content at a {level} level.
-Make it easy for teachers to explain to their students.
-Include:
-1. A simple definition
-2. Real-world examples or analogies
-3. Visual description that could be drawn on a board
-4. Common misconceptions to avoid
-5. Step-by-step explanation for complex processes
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.
+    explainTopicPrompt: `Explain the concept of "{topic}" from the following content at a {level} level in a way that teachers can easily adapt for their classrooms.
+Structure your response with markdown for easy scanning and classroom use:
+
+## Simple Definition
+Provide a clear, concise definition appropriate for {level} students.
+
+## Real-World Examples and Analogies
+Include 2-3 concrete examples or analogies that connect to students' everyday experiences.
+
+## Visual Concept
+Describe a visual representation that teachers could quickly draw on a board, or use in a handout.
+
+## Common Misconceptions
+List 2-3 common misconceptions students have about this topic with brief corrections.
+
+## Teaching Sequence
+Provide a clear step-by-step explanation that teachers can follow when introducing this concept.
+
+## Quick Assessment
+Include 1-2 quick formative assessment questions teachers can use to check understanding.
 
 {content}`,
     
-    explainGeneralPrompt: `Identify and explain 3-5 complex concepts from the following content at a {level} level.
-Make it easy for teachers to explain to their students.
-For each concept include:
-1. A simple definition
-2. Real-world examples or analogies
-3. Visual description that could be drawn on a board
-4. Common misconceptions to avoid
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.
+    explainGeneralPrompt: `Identify and explain 3-5 complex concepts from the following content at a {level} level that teachers need to emphasize.
+Format your response using markdown for easy classroom preparation:
+
+# Key Concepts Overview
+Begin with a brief overview of how these concepts connect to one another.
+
+For each concept, provide the following sections:
+
+## [Concept Name]
+**Definition:** A clear, concise definition appropriate for {level} students.
+
+**Real-world Applications:** 
+- 2-3 examples that connect to students' experiences
+- How this concept appears in everyday contexts
+
+**Visual Representation:**
+Describe a simple diagram, chart or illustration that teachers could use to visualize this concept.
+
+**Common Misconceptions:**
+- List common student misunderstandings
+- Provide quick corrections for each
+
+**Teaching Tips:**
+Brief strategies for introducing and reinforcing this concept effectively.
 
 {content}`,
     
     // Suggest prompts
-    suggestPrompt: `Provide teaching suggestions and activity ideas for a {format} based on the following content.
-Include:
-1. 3-5 specific teaching activities with clear instructions
-2. Estimated time for each activity
-3. Required materials or preparation
-4. Learning objectives addressed
-5. Assessment strategies to measure understanding
-6. Differentiation options for various student levels
-IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.
+    suggestPrompt: `Design a comprehensive {format} plan based on the following content that aligns with educational best practices.
+Format your response using markdown for maximum clarity and usability:
+
+# {format} Plan: [Create an engaging title]
+
+## Learning Objectives
+List 3-5 specific, measurable learning objectives that students should achieve.
+
+## Preparation
+- **Time Required:** Estimate the total time needed
+- **Materials:** List all necessary materials/resources
+- **Prerequisites:** Note any prior knowledge students should have
+- **Technology Needs:** Specify any digital tools required
+
+## Detailed Plan
+Provide a structured, step-by-step implementation guide with timing for each segment:
+
+### Opening (Engagement)
+How to activate prior knowledge and motivate students.
+
+### Main Activities
+Detailed instructions for core learning activities, including:
+- Discussion prompts
+- Group/individual work instructions
+- Differentiation options for various learning needs
+- Digital or analog resources to incorporate
+
+### Conclusion
+Strategies for summarizing key points and checking for understanding.
+
+## Assessment
+Concrete methods to evaluate student learning, including:
+- Formative assessment techniques
+- Potential assignment/project ideas
+- Evaluation criteria or rubrics
+
+## Extension Activities
+Suggestions for additional activities for advanced students or further exploration.
 
 {content}`,
     
     // System prompts
-    summarizeSystemPrompt: "You are an AI assistant for teachers. Summarize the content in a clear, concise way that would be useful for lesson planning. It is CRITICAL that you follow the exact specified length requirements provided in the prompt (e.g., short, medium, or long). Focus on key concepts, main ideas, and educational value. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    summarizeSystemPrompt: "You are an AI assistant for teachers. Summarize the content in a clear, structured way that would be useful for lesson planning and classroom preparation. It is CRITICAL that you follow the exact specified length requirements provided in the prompt (e.g., short, medium, or long). Focus on key concepts, main ideas, and educational value. Use markdown formatting (headings, bullet points, bold for emphasis) to enhance readability and organization. Your goal is to create a summary that teachers can quickly scan and use directly in their teaching preparations.",
     
-    quizSystemPrompt: "You are an AI assistant for teachers. Generate quiz questions based on the content provided. Include a mix of question types and provide answers. Format the questions clearly with numbered items. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    quizSystemPrompt: "You are an AI assistant for teachers. Generate pedagogically sound quiz questions based on the content provided. Include appropriate question types and provide detailed answers. Format questions using markdown for clarity (bold, numbered lists, etc.) to create assessment materials that are immediately usable in the classroom. Align questions with different cognitive levels of Bloom's taxonomy to ensure comprehensive assessment of student understanding.",
     
-    explainSystemPrompt: "You are an AI assistant for teachers. Explain complex concepts from the content in simpler terms that would be easy for teachers to use with their students. Break down difficult ideas into understandable components. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    explainSystemPrompt: "You are an AI assistant for teachers. Explain complex concepts from the content in structured, clear terms that teachers can directly adapt for their students. Use markdown formatting (headings, bullet points, emphasis) to organize information in a classroom-ready format. Break down difficult ideas into understandable components and provide concrete teaching strategies. Your explanations should be immediately usable as teaching resources.",
     
-    suggestSystemPrompt: "You are an AI assistant for teachers. Provide teaching suggestions, activity ideas, and discussion points based on the content. Focus on practical, engaging approaches that would work well in a classroom setting. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax.",
+    suggestSystemPrompt: "You are an AI assistant for teachers. Provide comprehensive teaching plans, activity ideas, and discussion prompts based on the content. Focus on practical, evidence-based approaches that align with modern pedagogical best practices. Use markdown formatting to create well-structured, easily scannable lesson plans. Include clear objectives, timing guidance, and assessment strategies to support effective classroom implementation.",
     
     // Custom tab
     custom: 'Custom',
@@ -146,13 +207,15 @@ IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only 
     templateReflectionQuestions: 'Reflection Questions',
     
     // Custom prompts
-    customPrompt: `Answer the following request based on the content of the page:
+    customPrompt: `Answer the following request based on the content of the page, creating an educationally valuable response:
 {prompt}
+
+Structure your response with appropriate markdown formatting (headings, lists, emphasis) to enhance clarity and usability for teaching purposes.
 
 Here is the content to analyze:
 {content}`,
     
-    customSystemPrompt: "You are an AI assistant for teachers. Answer the user's specific question or request about the content provided. Focus on educational relevance and provide clear, thorough responses. IMPORTANT: Do NOT use Markdown formatting in your response. Use plain text only with no special formatting symbols or syntax."
+    customSystemPrompt: "You are an AI assistant for teachers. Answer the user's specific question or request about the content provided. Focus on educational relevance and provide well-structured, pedagogically sound responses. Use appropriate markdown formatting (headings, bullet points, emphasis) to organize information in a way that's immediately useful in educational contexts. Prioritize creating responses that can be directly applied in teaching settings."
   },
   
   dutch: {
@@ -220,69 +283,130 @@ Here is the content to analyze:
 Lengte: {length}.
 Houd je STRIKT aan de opgegeven lengte-eis - schrijf niet meer of minder dan gevraagd.
 Focus op educatieve waarde, kernconcepten en leerdoelen.
-Organiseer de samenvatting met duidelijke secties en markeer belangrijke terminologie.
-Voeg aan het einde 2-3 potentiële discussievragen toe.
-BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+Organiseer de samenvatting met duidelijke secties door gebruik van markdown koppen (##) en markeer belangrijke terminologie met **vetgedrukte tekst**.
+Identificeer 2-3 belangrijke leerresultaten die leerlingen zouden moeten bereiken.
+Voeg aan het einde 2-3 potentiële discussievragen toe die kritisch denken bevorderen.
+Gebruik opsommingstekens voor kernpunten en concepten om scanbaarheid voor drukke docenten te verbeteren.
 
 {content}`,
     
     // Quiz prompts
-    quizPrompt: `Maak {count} {type} quizvragen op basis van de volgende inhoud.
-Voeg antwoorden toe voor elke vraag.
+    quizPrompt: `Maak {count} {type} quizvragen op basis van de volgende inhoud afgestemd op klaslokaaltoetsing.
+Formatteer de vragen met markdown voor duidelijkheid:
+- Gebruik **vetgedrukt** voor vraagnummers
+- Organiseer meerkeuzeopties als een genummerde lijst
+- Gebruik *cursief* voor de juiste antwoorduitleg
+
 Voor meerkeuzevragen, geef 4 opties met één juist antwoord.
 Voor waar/onwaar-vragen, geef duidelijk aan of de stelling waar of onwaar is.
 Voor kort-antwoordvragen, geef een modelantwoord.
-Zorg ervoor dat vragen verschillende cognitieve niveaus testen (kennis, begrip, toepassing, analyse).
-BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+Ontwikkel vragen die verschillende cognitieve niveaus testen (kennis, begrip, toepassing, analyse) volgens de taxonomie van Bloom.
+Verbind elke vraag waar mogelijk aan specifieke leerdoelen.
 BELANGRIJK: Maak alleen {type} soort vragen.
 
 {content}`,
     
     // Explain prompts
-    explainTopicPrompt: `Leg het concept "{topic}" uit van de volgende inhoud op een {level} niveau.
-Maak het makkelijk voor docenten om het aan hun studenten uit te leggen.
-Neem op:
-1. Een eenvoudige definitie
-2. Voorbeelden uit de praktijk of analogieën
-3. Visuele beschrijving die op een bord getekend kan worden
-4. Veelvoorkomende misvattingen om te vermijden
-5. Stap-voor-stap uitleg voor complexe processen
-BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+    explainTopicPrompt: `Leg het concept "{topic}" uit van de volgende inhoud op een {level} niveau op een manier die docenten gemakkelijk kunnen aanpassen voor hun klaslokalen.
+Structureer je antwoord met markdown voor eenvoudig scannen en klaslokaalgebruik:
+
+## Eenvoudige Definitie
+Geef een heldere, beknopte definitie die geschikt is voor {level} studenten.
+
+## Praktijkvoorbeelden en Analogieën
+Neem 2-3 concrete voorbeelden of analogieën op die aansluiten bij de dagelijkse ervaringen van studenten.
+
+## Visueel Concept
+Beschrijf een visuele weergave die docenten snel op een bord kunnen tekenen of in een handout kunnen gebruiken.
+
+## Veelvoorkomende Misvattingen
+Noteer 2-3 veel voorkomende misvattingen die studenten hebben over dit onderwerp met korte correcties.
+
+## Lesopbouw
+Geef een duidelijke stap-voor-stap uitleg die docenten kunnen volgen bij het introduceren van dit concept.
+
+## Snelle Beoordeling
+Voeg 1-2 snelle formatieve beoordelingsvragen toe die docenten kunnen gebruiken om begrip te toetsen.
 
 {content}`,
     
-    explainGeneralPrompt: `Identificeer en leg 3-5 complexe concepten uit van de volgende inhoud op een {level} niveau.
-Maak het makkelijk voor docenten om ze aan hun studenten uit te leggen.
-Neem voor elk concept op:
-1. Een eenvoudige definitie
-2. Voorbeelden uit de praktijk of analogieën
-3. Visuele beschrijving die op een bord getekend kan worden
-4. Veelvoorkomende misvattingen om te vermijden
-BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+    explainGeneralPrompt: `Identificeer en leg 3-5 complexe concepten uit van de volgende inhoud op een {level} niveau die docenten moeten benadrukken.
+Formatteer je antwoord met markdown voor eenvoudige klasvoorbereiding:
+
+# Overzicht Hoofdconcepten
+Begin met een korte toelichting over hoe deze concepten met elkaar verbonden zijn.
+
+Voor elk concept, geef de volgende secties:
+
+## [Conceptnaam]
+**Definitie:** Een heldere, beknopte definitie die geschikt is voor {level} studenten.
+
+**Praktijktoepassingen:** 
+- 2-3 voorbeelden die aansluiten bij de ervaringen van studenten
+- Hoe dit concept voorkomt in alledaagse contexten
+
+**Visuele Weergave:**
+Beschrijf een eenvoudig diagram, grafiek of illustratie die docenten kunnen gebruiken om dit concept te visualiseren.
+
+**Veelvoorkomende Misvattingen:**
+- Overzicht van veelvoorkomende misverstanden bij studenten
+- Geef beknopte correcties voor elk misverstand
+
+**Lestips:**
+Korte strategieën voor het effectief introduceren en versterken van dit concept.
 
 {content}`,
     
     // Suggest prompts
-    suggestPrompt: `Geef lesadviezen en activiteitenideeën voor een {format} op basis van de volgende inhoud.
-Neem op:
-1. 3-5 specifieke lesactiviteiten met duidelijke instructies
-2. Geschatte tijd voor elke activiteit
-3. Benodigde materialen of voorbereiding
-4. Behandelde leerdoelen
-5. Beoordelingsstrategieën om begrip te meten
-6. Differentiatieopties voor verschillende niveaus van studenten
-BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.
+    suggestPrompt: `Ontwerp een uitgebreid {format}-plan op basis van de volgende inhoud dat aansluit bij educatieve best practices.
+Formatteer je antwoord met markdown voor maximale duidelijkheid en bruikbaarheid:
+
+# {format} Plan: [Verzin een aansprekende titel]
+
+## Leerdoelen
+Benoem 3-5 specifieke, meetbare leerdoelen die studenten zouden moeten bereiken.
+
+## Voorbereiding
+- **Benodigde Tijd:** Schat de totale benodigde tijd in
+- **Materialen:** Benoem alle benodigde materialen/middelen
+- **Voorkennis:** Noteer eventuele voorkennis die studenten moeten hebben
+- **Technologiebehoeften:** Specificeer eventuele benodigde digitale tools
+
+## Gedetailleerd Plan
+Bied een gestructureerde, stap-voor-stap implementatiegids met tijdsindeling voor elk segment:
+
+### Opening (Betrokkenheid)
+Hoe voorkennis te activeren en studenten te motiveren.
+
+### Hoofdactiviteiten
+Gedetailleerde instructies voor kernleeractiviteiten, inclusief:
+- Discussievragen
+- Groeps-/individuele werkinstructies
+- Differentiatieopties voor verschillende leerbehoeften
+- Digitale of analoge hulpmiddelen om op te nemen
+
+### Conclusie
+Strategieën voor het samenvatten van belangrijke punten en het controleren van begrip.
+
+## Beoordeling
+Concrete methoden om het leren van studenten te evalueren, inclusief:
+- Formatieve beoordelingstechnieken
+- Potentiële opdracht-/projectideeën
+- Evaluatiecriteria of rubrieken
+
+## Uitbreidingsactiviteiten
+Suggesties voor aanvullende activiteiten voor gevorderde studenten of verdere verkenning.
 
 {content}`,
     
     // System prompts
-    summarizeSystemPrompt: "Je bent een AI-assistent voor docenten. Vat de inhoud samen op een duidelijke, beknopte manier die nuttig zou zijn voor lesplanning. Het is CRUCIAAL dat je de exacte lengte-eisen volgt die in de prompt worden vermeld (bijv. kort, gemiddeld of lang). Focus op kernconcepten, hoofdideeën en educatieve waarde. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    summarizeSystemPrompt: "Je bent een AI-assistent voor docenten. Vat de inhoud samen op een duidelijke, gestructureerde manier die nuttig zou zijn voor lesplanning en klasvoorbereiding. Het is CRUCIAAL dat je de exacte lengte-eisen volgt die in de prompt worden vermeld (bijv. kort, gemiddeld of lang). Focus op kernconcepten, hoofdideeën en educatieve waarde. Gebruik markdown-opmaak (koppen, opsommingstekens, vetgedrukt voor nadruk) om de leesbaarheid en organisatie te verbeteren. Je doel is om een samenvatting te maken die docenten snel kunnen scannen en direct kunnen gebruiken in hun lesvoorbereidingen.",
     
-    quizSystemPrompt: "Je bent een AI-assistent voor docenten. Genereer quizvragen op basis van de geleverde inhoud. Neem een mix van vraagtypes op en geef antwoorden. Formatteer de vragen duidelijk met genummerde items. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    quizSystemPrompt: "Je bent een AI-assistent voor docenten. Genereer pedagogisch verantwoorde quizvragen op basis van de geleverde inhoud. Neem passende vraagtypen op en geef gedetailleerde antwoorden. Formatteer vragen met markdown voor duidelijkheid (vetgedrukt, genummerde lijsten, enz.) om beoordelingsmaterialen te maken die onmiddellijk bruikbaar zijn in de klas. Stem vragen af op verschillende cognitieve niveaus van de taxonomie van Bloom om een uitgebreide beoordeling van het begrip van studenten te waarborgen.",
     
-    explainSystemPrompt: "Je bent een AI-assistent voor docenten. Leg complexe concepten uit de inhoud uit in eenvoudigere termen die docenten gemakkelijk met hun studenten kunnen gebruiken. Breek moeilijke ideeën op in begrijpelijke componenten. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    explainSystemPrompt: "Je bent een AI-assistent voor docenten. Leg complexe concepten uit de inhoud uit in gestructureerde, duidelijke termen die docenten direct kunnen aanpassen voor hun studenten. Gebruik markdown-opmaak (koppen, opsommingstekens, nadruk) om informatie te organiseren in een klasklaar formaat. Breek moeilijke ideeën op in begrijpelijke componenten en bied concrete lesstrategieën. Je uitleg moet direct bruikbaar zijn als lesmateriaal.",
     
-    suggestSystemPrompt: "Je bent een AI-assistent voor docenten. Geef lesadviezen, activiteitenideeën en discussiepunten op basis van de inhoud. Focus op praktische, boeiende benaderingen die goed zouden werken in een klaslokaal. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis.",
+    suggestSystemPrompt: "Je bent een AI-assistent voor docenten. Bied uitgebreide lesplannen, activiteitenideeën en discussievragen op basis van de inhoud. Focus op praktische, evidence-based benaderingen die aansluiten bij moderne pedagogische best practices. Gebruik markdown-opmaak om goed gestructureerde, gemakkelijk scanbare lesplannen te maken. Neem duidelijke doelstellingen, tijdsrichtlijnen en beoordelingsstrategieën op om een effectieve implementatie in de klas te ondersteunen.",
     
     // Custom tab
     custom: 'Aangepast',
@@ -299,15 +423,31 @@ BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte t
     templateReflectionQuestions: 'Reflectievragen',
     
     // Custom prompts
-    customPrompt: `Beantwoord het volgende verzoek op basis van de inhoud van de pagina:
+    customPrompt: `Beantwoord het volgende verzoek op basis van de inhoud van de pagina, door een educatief waardevolle reactie te creëren:
 {prompt}
+
+Structureer je antwoord met passende markdown-opmaak (koppen, lijsten, nadruk) om de duidelijkheid en bruikbaarheid voor onderwijsdoeleinden te verbeteren.
 
 Hier is de inhoud om te analyseren:
 {content}`,
     
-    customSystemPrompt: "Je bent een AI-assistent voor docenten. Beantwoord de specifieke vraag of het verzoek van de gebruiker over de gegeven inhoud. Focus op educatieve relevantie en geef duidelijke, grondige antwoorden. BELANGRIJK: Gebruik GEEN Markdown-opmaak in je antwoord. Gebruik alleen platte tekst zonder speciale opmaaksymbolen of syntaxis."
+    customSystemPrompt: "Je bent een AI-assistent voor docenten. Beantwoord de specifieke vraag of het verzoek van de gebruiker over de gegeven inhoud. Focus op educatieve relevantie en geef goed gestructureerde, pedagogisch verantwoorde antwoorden. Gebruik passende markdown-opmaak (koppen, opsommingstekens, nadruk) om informatie te organiseren op een manier die direct bruikbaar is in onderwijscontexten. Prioriteer het maken van antwoorden die direct kunnen worden toegepast in leersituaties."
   }
 };
+
+// Utility: debounce
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// Utility: safely get element by id
+function $(id) {
+  return document.getElementById(id);
+}
 
 // DOM elements
 let apiKeyInput, saveApiKeyBtn, apiStatus;
@@ -1108,13 +1248,18 @@ async function callOpenAI(prompt, feature) {
   });
 }
 
-// Display API response
+// Display API response with markdown formatting
 function displayResult(text) {
   hideLoading();
   
   // Add animation for result appearance
   resultContent.style.opacity = '0';
-  resultContent.textContent = text;
+  
+  // Convert markdown to HTML using simple regex replacements
+  const formattedText = convertMarkdownToHTML(text);
+  
+  // Use innerHTML to render the formatted HTML
+  resultContent.innerHTML = formattedText;
   
   setTimeout(() => {
     resultContent.style.opacity = '1';
@@ -1124,7 +1269,7 @@ function displayResult(text) {
     
     // Show action buttons with animation
     setTimeout(() => {
-  resultActions.classList.remove('hidden');
+      resultActions.classList.remove('hidden');
       resultActions.style.opacity = '0';
       resultActions.style.transform = 'translateY(10px)';
       
@@ -1134,6 +1279,46 @@ function displayResult(text) {
       }, 50);
     }, 300);
   }, 150);
+}
+
+// Function to convert markdown to HTML
+function convertMarkdownToHTML(text) {
+  if (!text) return '';
+  
+  // Replace headings
+  text = text.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+  text = text.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+  text = text.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+  text = text.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
+  
+  // Replace bold
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Replace italic
+  text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  // Replace unordered lists
+  text = text.replace(/^- (.*?)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>.*?<\/li>\n)+/gs, '<ul>$&</ul>');
+  
+  // Replace ordered lists (numbers)
+  text = text.replace(/^\d+\. (.*?)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>.*?<\/li>\n)+/gs, '<ol>$&</ol>');
+  
+  // Replace line breaks with paragraph tags
+  const paragraphs = text.split('\n\n');
+  text = paragraphs.map(p => {
+    // Skip if it's already a formatted element
+    if (p.trim().startsWith('<h') || 
+        p.trim().startsWith('<ul') || 
+        p.trim().startsWith('<ol') ||
+        p.trim().startsWith('<li')) {
+      return p;
+    }
+    return `<p>${p}</p>`;
+  }).join('\n');
+  
+  return text;
 }
 
 // Show loading indicator
@@ -1162,7 +1347,14 @@ function hideLoading() {
 
 // Copy result to clipboard
 function copyResult() {
-  navigator.clipboard.writeText(resultContent.textContent)
+  // Create a temporary element to get the formatted text with proper line breaks
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = resultContent.innerHTML;
+  
+  // Process the HTML to create a clean text version with proper formatting
+  const text = processHTMLForCopy(tempDiv);
+  
+  navigator.clipboard.writeText(text)
     .then(() => {
       const originalText = copyResultBtn.textContent;
       const originalWidth = copyResultBtn.offsetWidth;
@@ -1193,22 +1385,104 @@ function copyResult() {
     });
 }
 
+// Process HTML for copying with proper formatting
+function processHTMLForCopy(element) {
+  let result = '';
+  const children = element.childNodes;
+  
+  for (let i = 0; i < children.length; i++) {
+    const node = children[i];
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+      result += node.textContent;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName.toLowerCase();
+      
+      // Handle different HTML elements
+      if (tagName === 'h1') {
+        result += '# ' + processHTMLForCopy(node) + '\n\n';
+      } else if (tagName === 'h2') {
+        result += '## ' + processHTMLForCopy(node) + '\n\n';
+      } else if (tagName === 'h3') {
+        result += '### ' + processHTMLForCopy(node) + '\n\n';
+      } else if (tagName === 'h4') {
+        result += '#### ' + processHTMLForCopy(node) + '\n\n';
+      } else if (tagName === 'p') {
+        result += processHTMLForCopy(node) + '\n\n';
+      } else if (tagName === 'strong') {
+        result += '**' + processHTMLForCopy(node) + '**';
+      } else if (tagName === 'em') {
+        result += '*' + processHTMLForCopy(node) + '*';
+      } else if (tagName === 'ul') {
+        result += processHTMLForCopy(node) + '\n';
+      } else if (tagName === 'ol') {
+        result += processHTMLForCopy(node) + '\n';
+      } else if (tagName === 'li') {
+        const parent = node.parentNode;
+        if (parent.tagName.toLowerCase() === 'ul') {
+          result += '- ' + processHTMLForCopy(node) + '\n';
+        } else if (parent.tagName.toLowerCase() === 'ol') {
+          // Find the index of this li within its parent
+          let index = 1;
+          let sibling = node.previousElementSibling;
+          while (sibling) {
+            index++;
+            sibling = sibling.previousElementSibling;
+          }
+          result += index + '. ' + processHTMLForCopy(node) + '\n';
+        } else {
+          result += '- ' + processHTMLForCopy(node) + '\n';
+        }
+      } else {
+        result += processHTMLForCopy(node);
+      }
+    }
+  }
+  
+  return result;
+}
+
 // Download result as text file
 function downloadResult() {
-  const text = resultContent.textContent;
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
+  // Create a temporary element to get the formatted text
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = resultContent.innerHTML;
+  
+  // Process the HTML to create a clean text version with proper formatting
+  const text = processHTMLForCopy(tempDiv);
+  
+  // Create two blob options: markdown and html
+  const markdownBlob = new Blob([text], { type: 'text/markdown' });
+  const htmlBlob = new Blob(['<html><head><style>body{font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px}h1{color:#0077B3}h2{color:#0077B3}h3{color:#0077B3}ul,ol{margin-left:20px}li{margin-bottom:5px}</style></head><body>' + resultContent.innerHTML + '</body></html>'], { type: 'text/html' });
+  
+  // Create multiple download options
+  const markdownUrl = URL.createObjectURL(markdownBlob);
+  const htmlUrl = URL.createObjectURL(htmlBlob);
   
   // Add download animation
   downloadResultBtn.classList.add('success-action');
   
+  // Create and trigger the markdown download
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `${activeTab}-result.txt`;
+  a.href = markdownUrl;
+  a.download = `${activeTab}-result.md`;
   document.body.appendChild(a);
   a.click();
+  
+  // Small delay before the HTML download
+  setTimeout(() => {
+    // Create and trigger the HTML download
+    const b = document.createElement('a');
+    b.href = htmlUrl;
+    b.download = `${activeTab}-result.html`;
+    document.body.appendChild(b);
+    b.click();
+    document.body.removeChild(b);
+    URL.revokeObjectURL(htmlUrl);
+  }, 500);
+  
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(markdownUrl);
   
   // Show success feedback
   const originalText = downloadResultBtn.textContent;

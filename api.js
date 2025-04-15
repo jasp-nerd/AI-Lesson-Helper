@@ -10,24 +10,24 @@
  */
 async function generateContent(apiKey, prompt, options = {}) {
   try {
-    console.log("Starting API request with prompt:", prompt.substring(0, 100) + "...");
-    
+    console.log(`Starting API request with prompt: ${prompt?.substring(0, 100)}...`);
+
     // Prepare request body
     const requestBody = {
       contents: [
         {
           parts: [
             {
-              text: options.systemPrompt ? options.systemPrompt + "\n\n" + prompt : prompt
+              text: options.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt
             }
           ]
         }
       ]
     };
-    
+
     // Log the request for debugging
     console.log("Request body:", JSON.stringify(requestBody));
-    
+
     // Make direct REST API call to Gemini
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -39,11 +39,11 @@ async function generateContent(apiKey, prompt, options = {}) {
         body: JSON.stringify(requestBody)
       }
     );
-    
+
     // Get the raw response text for better error handling
     const responseText = await response.text();
     console.log("Raw API response:", responseText);
-    
+
     // Try to parse the response as JSON
     let data;
     try {
@@ -52,13 +52,13 @@ async function generateContent(apiKey, prompt, options = {}) {
       console.error("Failed to parse API response as JSON:", parseError);
       throw new Error(`Failed to parse API response: ${responseText.substring(0, 100)}...`);
     }
-    
+
     // Check if response is successful
     if (!response.ok) {
       // Enhanced error handling with detailed information
       const errorMessage = data.error?.message || response.statusText;
       const errorCode = data.error?.code || response.status;
-      
+
       console.error("API Error:", {
         status: response.status,
         statusText: response.statusText,
@@ -66,19 +66,18 @@ async function generateContent(apiKey, prompt, options = {}) {
         errorMessage,
         data
       });
-      
+
       throw new Error(`API Error (${errorCode}): ${errorMessage}`);
     }
-    
+
     // Verify the response structure and extract the content
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+    if (!data.candidates?.[0]?.content) {
       console.error("Unexpected API response structure:", data);
       throw new Error("Unexpected API response structure. Check console for details.");
     }
-    
+
     // Extract the text from the response
-    const resultText = data.candidates[0].content.parts[0].text;
-    return resultText;
+    return data.candidates[0].content.parts[0].text;
   } catch (error) {
     console.error('Error calling Gemini API:', error);
     // Return a more user-friendly error message
@@ -93,13 +92,13 @@ async function generateContent(apiKey, prompt, options = {}) {
  */
 async function validateApiKey(apiKey) {
   try {
-    if (!apiKey || apiKey.trim() === "") {
+    if (!apiKey?.trim()) {
       console.error("Empty API key provided");
       return false;
     }
-    
+
     console.log("Validating API key...");
-    
+
     // Make a simple request to check if API key is valid
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`,
@@ -110,20 +109,20 @@ async function validateApiKey(apiKey) {
         }
       }
     );
-    
+
     // Get the raw response for better error handling
     const responseText = await response.text();
     console.log("Validation response:", responseText);
-    
+
     if (!response.ok) {
       console.error("API key validation failed:", response.status, responseText);
       return false;
     }
-    
+
     // Try to parse the response
     try {
       const data = JSON.parse(responseText);
-      const isValid = data.models && data.models.length > 0;
+      const isValid = !!(data.models && data.models.length > 0);
       console.log("API key validation result:", isValid);
       return isValid;
     } catch (parseError) {

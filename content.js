@@ -8,120 +8,106 @@ let vuFloatingIcon = null;
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "getPageContent") {
-    // Extract page content with more structure
-    const content = extractStructuredContent();
-    sendResponse({ content: content });
-    return true;
-  }
-  
-  if (request.action === "highlightText") {
-    highlightText(request.text);
-    sendResponse({ success: true });
-    return true;
-  }
-  
-  if (request.action === "clearHighlights") {
-    clearHighlights();
-    sendResponse({ success: true });
-    return true;
+  switch (request.action) {
+    case "getPageContent":
+      sendResponse({ content: extractStructuredContent() });
+      return true;
+    case "highlightText":
+      highlightText(request.text);
+      sendResponse({ success: true });
+      return true;
+    case "clearHighlights":
+      clearHighlights();
+      sendResponse({ success: true });
+      return true;
+    default:
+      break;
   }
 });
 
 // Listen for messages from iframe
 window.addEventListener('message', (event) => {
-  // Verify the sender origin for security
-  if (event.origin !== window.location.origin) return;
-  
-  if (event.data.action === 'requestPageContent') {
-    // Extract content and send back to iframe
-    const content = extractStructuredContent();
-    
-    // Send the content back to the iframe
-    if (vuDraggableWindow) {
-      const iframe = vuDraggableWindow.querySelector('iframe');
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({
-          action: 'receivePageContent',
-          content: content
-        }, '*');
+  // Allow messages from extension iframe as well as same origin
+  const extensionOrigin = chrome.runtime.getURL('').replace(/\/$/, '');
+  if (
+    event.origin !== window.location.origin &&
+    event.origin !== extensionOrigin
+  ) return;
+
+  switch (event.data.action) {
+    case 'requestPageContent': {
+      // Extract content and send back to iframe
+      const content = extractStructuredContent();
+      // Send the content back to the iframe
+      if (vuDraggableWindow) {
+        const iframe = vuDraggableWindow.querySelector('iframe');
+        if (iframe?.contentWindow) {
+          iframe.contentWindow.postMessage({
+            action: 'receivePageContent',
+            content
+          }, '*');
+        }
       }
+      break;
     }
-  }
-  
-  if (event.data.action === 'highlightText') {
-    highlightText(event.data.text);
-  }
-  
-  if (event.data.action === 'clearHighlights') {
-    clearHighlights();
+    case 'highlightText':
+      highlightText(event.data.text);
+      break;
+    case 'clearHighlights':
+      clearHighlights();
+      break;
+    default:
+      break;
   }
 });
 
 // Function to extract structured content from the page
 function extractStructuredContent() {
-  // Get basic page info
   const pageInfo = {
     title: document.title,
     url: window.location.href,
     text: document.body.innerText
   };
-  
+
   // Extract headings for better structure
-  const headings = {};
-  const h1Elements = document.querySelectorAll('h1');
-  const h2Elements = document.querySelectorAll('h2');
-  const h3Elements = document.querySelectorAll('h3');
-  
-  headings.h1 = Array.from(h1Elements).map(el => el.innerText);
-  headings.h2 = Array.from(h2Elements).map(el => el.innerText);
-  headings.h3 = Array.from(h3Elements).map(el => el.innerText);
-  
+  const headings = {
+    h1: Array.from(document.querySelectorAll('h1')).map(el => el.innerText),
+    h2: Array.from(document.querySelectorAll('h2')).map(el => el.innerText),
+    h3: Array.from(document.querySelectorAll('h3')).map(el => el.innerText)
+  };
+
   // Extract paragraphs for better content analysis
   const paragraphs = Array.from(document.querySelectorAll('p'))
     .map(el => el.innerText)
     .filter(text => text.trim().length > 0);
-  
+
   // Extract lists for better structured content
   const lists = Array.from(document.querySelectorAll('ul, ol'))
-    .map(list => {
-      const items = Array.from(list.querySelectorAll('li')).map(li => li.innerText);
-      return {
-        type: list.tagName.toLowerCase(),
-        items: items
-      };
-    });
-  
+    .map(list => ({
+      type: list.tagName.toLowerCase(),
+      items: Array.from(list.querySelectorAll('li')).map(li => li.innerText)
+    }));
+
   // Extract images with alt text for context
   const images = Array.from(document.querySelectorAll('img'))
-    .filter(img => img.alt && img.alt.trim().length > 0)
-    .map(img => ({
-      alt: img.alt,
-      src: img.src
-    }));
-  
+    .filter(img => img.alt?.trim())
+    .map(img => ({ alt: img.alt, src: img.src }));
+
   // Extract tables for structured data
   const tables = Array.from(document.querySelectorAll('table'))
     .map(table => {
       const headers = Array.from(table.querySelectorAll('th')).map(th => th.innerText);
-      const rows = Array.from(table.querySelectorAll('tr')).map(tr => 
+      const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
         Array.from(tr.querySelectorAll('td')).map(td => td.innerText)
       ).filter(row => row.length > 0);
-      
-      return {
-        headers: headers,
-        rows: rows
-      };
+      return { headers, rows };
     });
-  
+
   // Extract meta description if available
   let metaDescription = "";
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDescription = metaDesc.getAttribute("content");
-  }
-  
-  // Combine all extracted content
+  if (metaDesc) metaDescription = metaDesc.getAttribute("content");
+
   return {
     ...pageInfo,
     metaDescription,
@@ -392,11 +378,11 @@ function makeDraggable(element, handle) {
 
 // Toggle the draggable window
 function toggleDraggableWindow() {
-  // Create window if it doesn't exist
-  if (!vuDraggableWindow) {
-    createDraggableWindow();
+  // Always (re)create window if it doesn't exist or was removed from DOM
+  if (!vuDraggableWindow || !document.body.contains(vuDraggableWindow)) {
+    vuDraggableWindow = createDraggableWindow();
   }
-  
+
   // Toggle visibility
   if (vuDraggableWindow.classList.contains('hidden')) {
     showDraggableWindow();
@@ -434,34 +420,53 @@ function hideDraggableWindow() {
   }
 }
 
-// Check if the current page is likely educational
+// Check if the current page is likely educational or informational
 function isEducationalPage() {
+  // Domains commonly used for educational or informational purposes
   const educationalDomains = [
-    '.edu', '.ac.', 'scholar.', 'academic.', 'research.', 'science.', 
+    '.edu', '.ac.', 'scholar.', 'academic.', 'research.', 'science.',
     'learning.', 'study.', 'course.', 'class.', 'lecture.', 'school.',
-    'university.', 'college.', 'academy.', 'institute.', 'faculty.'
+    'university.', 'college.', 'academy.', 'institute.', 'faculty.',
+    '.org', '.gov', '.info', 'wikipedia.', 'encyclopedia.', 'khanacademy.', 'britannica.'
   ];
-  
+
+  // Keywords that suggest informational or article content
+  const infoKeywords = [
+    'education', 'learning', 'academic', 'course', 'study', 'research', 'school', 'university', 'college', 'lecture', 'class',
+    'article', 'blog', 'news', 'how to', 'guide', 'tutorial', 'encyclopedia', 'reference', 'explanation', 'information', 'faq', 'summary', 'lesson', 'curriculum', 'report', 'analysis', 'review', 'insight', 'explained'
+  ];
+
   const url = window.location.hostname.toLowerCase();
-  const metaTags = document.querySelectorAll('meta[name="keywords"], meta[name="description"]');
+  const pathname = window.location.pathname.toLowerCase();
+  const metaTags = document.querySelectorAll('meta[name="keywords"], meta[name="description"], meta[property^="og:"], meta[name^="twitter:"]');
   const metaContent = Array.from(metaTags).map(tag => tag.getAttribute('content') || '').join(' ').toLowerCase();
-  
+
   // Check domain
   const isEduDomain = educationalDomains.some(domain => url.includes(domain));
-  
-  // Check meta content for educational keywords
-  const eduKeywords = ['education', 'learning', 'academic', 'course', 'study', 'research', 'school', 'university', 'college', 'lecture', 'class'];
-  const hasEduKeywords = eduKeywords.some(keyword => metaContent.includes(keyword));
-  
-  // Check content
-  const pageText = document.body.innerText.toLowerCase();
-  const contentEduScore = eduKeywords.filter(keyword => pageText.includes(keyword)).length;
-  
-  // For development, always return true
-  // return true;
-  
-  // Return true if likely educational
-  return isEduDomain || hasEduKeywords || contentEduScore >= 3;
+
+  // Check meta content and URL for keywords
+  const hasInfoKeywords = infoKeywords.some(keyword => metaContent.includes(keyword) || pathname.includes(keyword));
+
+  // Check for article-like structure
+  const hasArticleTag = document.querySelector('article, main, section');
+  const hasHeadings = document.querySelector('h1, h2');
+  const wordCount = document.body.innerText.split(/\s+/).length;
+
+  // Check for Open Graph type article
+  const ogType = document.querySelector('meta[property="og:type"]');
+  const isOGArticle = ogType && ogType.getAttribute('content') && ogType.getAttribute('content').toLowerCase().includes('article');
+
+  // Heuristic: If the page has a lot of text and at least one heading, it's likely informational
+  const isLongInformational = wordCount > 500 && hasHeadings;
+
+  // Return true if any of the above criteria are met
+  return (
+    isEduDomain ||
+    hasInfoKeywords ||
+    hasArticleTag ||
+    isOGArticle ||
+    isLongInformational
+  );
 }
 
 // Initialize content script

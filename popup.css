@@ -371,6 +371,65 @@ button:active {
   overflow-wrap: break-word;
 }
 
+/* Markdown styling for result content */
+#result-content h1 {
+  font-size: 20px;
+  color: var(--vu-blue);
+  border-bottom: 1px solid rgba(0, 119, 179, 0.3);
+  padding-bottom: 5px;
+  margin: 15px 0 10px 0;
+}
+
+#result-content h2 {
+  font-size: 18px;
+  color: var(--vu-dark-blue);
+  margin: 14px 0 8px 0;
+}
+
+#result-content h3 {
+  font-size: 16px;
+  color: var(--vu-dark-blue);
+  margin: 12px 0 6px 0;
+}
+
+#result-content h4 {
+  font-size: 15px;
+  color: var(--vu-dark-gray);
+  margin: 10px 0 5px 0;
+}
+
+#result-content p {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+#result-content strong {
+  color: var(--vu-dark-blue);
+  font-weight: 600;
+}
+
+#result-content em {
+  font-style: italic;
+}
+
+#result-content ul, #result-content ol {
+  margin: 10px 0 10px 20px;
+  padding-left: 15px;
+}
+
+#result-content li {
+  margin-bottom: 5px;
+  padding-left: 3px;
+}
+
+#result-content ul > li {
+  list-style-type: disc;
+}
+
+#result-content ol > li {
+  list-style-type: decimal;
+}
+
 .result-actions {
   display: flex;
   justify-content: space-between;
