@@ -10,7 +10,7 @@
  */
 async function generateContent(apiKey, prompt, options = {}) {
   try {
-    console.log(`Starting API request with prompt: ${prompt?.substring(0, 100)}...`);
+    console.log(`Starting API request with prompt: ${prompt}`);
 
     // Prepare request body
     const requestBody = {
@@ -26,7 +26,7 @@ async function generateContent(apiKey, prompt, options = {}) {
     };
 
     // Log the request for debugging
-    console.log("Request body:", JSON.stringify(requestBody));
+    // console.log("Request body:", JSON.stringify(requestBody));
 
     // Make direct REST API call to Google Gemini
     const response = await fetch(

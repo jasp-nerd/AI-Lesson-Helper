@@ -35,13 +35,9 @@ const translations = {
     mixed: 'Mixed',
     questionCount: 'Number of questions',
     difficulty: 'Difficulty',
-    level: 'Academic Level',
     easy: 'Easy',
     medium: 'Medium',
     hard: 'Hard',
-    primary: 'Primary',
-    secondary: 'Secondary',
-    university: 'University',
     
     // Explain tab
     explainTitle: 'Explain Complex Topics',
@@ -92,22 +88,23 @@ Include:
     quizPrompt: `Create {count} {type} quiz questions based on the following content for classroom assessment.
 
 Requirements:
+- All questions must be at the university level, but use the specified university difficulty: low, medium, or high.
 - Strictly adhere to the requested question type: only {type} questions
-- Assign a difficulty level to each question: low, medium, or hard
+- Assign a university difficulty level to each question: {difficulty}
 - Format using markdown for clarity:
   - **Bold** for question numbers
   - Numbered list for multiple choice options
   - *Italics* for correct answer explanations
 
 Question Format:
-- Multiple Choice: 4 options, one correct answer
+- Multiple Choice: 4 options, one correct answer. use ABCD
 - True/False: clearly state true or false
 - Short Answer: provide a model answer
 
 Questions should target a range of cognitive levels (knowledge, comprehension, application, analysis) per Bloom's taxonomy, and align with specific learning objectives where possible.
 
 IMPORTANT: Strictly follow this format for each question:
-1. The question (with difficulty level and academic level in parentheses)
+1. The question (with university difficulty in parentheses)
 2. For MC: numbered options
 3. The answer (clearly indicated)
 4. *Explanation* (in italics)
@@ -275,13 +272,9 @@ Here is the content to analyze:
     mixed: 'Gemengd',
     questionCount: 'Aantal vragen',
     difficulty: 'Moeilijkheidsgraad',
-    level: 'Onderwijsniveau',
     easy: 'Makkelijk',
     medium: 'Gemiddeld',
     hard: 'Moeilijk',
-    primary: 'Primair',
-    secondary: 'Voortgezet',
-    university: 'Universiteit',
     
     // Explain tab
     explainTitle: 'Complexe Onderwerpen Uitleggen',
@@ -324,17 +317,27 @@ Gebruik opsommingstekens voor kernpunten en concepten om scanbaarheid voor drukk
     
     // Quiz prompts
     quizPrompt: `Maak {count} {type} quizvragen op basis van de volgende inhoud afgestemd op klaslokaaltoetsing.
-Formatteer de vragen met markdown voor duidelijkheid:
-- Gebruik **vetgedrukt** voor vraagnummers
-- Organiseer meerkeuzeopties als een genummerde lijst
-- Gebruik *cursief* voor de juiste antwoorduitleg
+Vereisten:
+- Alle vragen moeten op universitair niveau zijn, maar gebruik het opgegeven universitair moeilijkheidsniveau: laag, medium of hoog.
+- Gebruik uitsluitend het gevraagde vraagtype: alleen {type} vragen
+- Ken aan elke vraag een universitair moeilijkheidsniveau toe: {difficulty} (laag/medium/hoog)
+- Formatteer met markdown voor duidelijkheid:
+  - **Vetgedrukt** voor vraagnummers
+  - Genummerde lijst voor meerkeuzeopties
+  - *Cursief* voor uitleg van het juiste antwoord
 
-Voor meerkeuzevragen, geef 4 opties met één juist antwoord.
-Voor waar/onwaar-vragen, geef duidelijk aan of de stelling waar of onwaar is.
-Voor kort-antwoordvragen, geef een modelantwoord.
-Ontwikkel vragen die verschillende cognitieve niveaus testen (kennis, begrip, toepassing, analyse) volgens de taxonomie van Bloom.
-Verbind elke vraag waar mogelijk aan specifieke leerdoelen.
-BELANGRIJK: Maak alleen {type} soort vragen.
+Vraagformaat:
+- Meerkeuze: 4 opties, één juist antwoord. Gebruik ABCD
+- Waar/Onwaar: geef duidelijk aan of de stelling waar of onwaar is
+- Kort Antwoord: geef een modelantwoord
+
+Vragen moeten verschillende cognitieve niveaus testen (kennis, begrip, toepassing, analyse) volgens de taxonomie van Bloom en aansluiten bij specifieke leerdoelen waar mogelijk.
+
+BELANGRIJK: Volg dit format strikt voor elke vraag:
+1. De vraag (met universitair moeilijkheidsniveau tussen haakjes)
+2. Voor meerkeuze: genummerde opties
+3. Het antwoord (duidelijk aangeven)
+4. *Uitleg* (cursief)
 
 {content}`,
     
@@ -487,7 +490,8 @@ let featuresSection, apiKeySection;
 let tabButtons, tabPanes;
 let resultContainer, resultContent, loadingIndicator, resultActions;
 let copyResultBtn, downloadResultBtn;
-let languageToggleBtn;
+let languageToggleBtn, settingsBtn;
+let noApiKeyOverlay, gotoSettingsBtn;
 
 // Feature buttons
 let generateSummaryBtn, generateQuizBtn, generateExplanationBtn, generateSuggestionsBtn;
@@ -527,48 +531,37 @@ document.addEventListener('DOMContentLoaded', () => {
   generateSuggestionsBtn = document.getElementById('generate-suggestions');
   
   languageToggleBtn = document.getElementById('language-toggle-btn');
+  settingsBtn = document.getElementById('settings-btn');
+  
+  noApiKeyOverlay = document.getElementById('no-api-key-overlay');
+  gotoSettingsBtn = document.getElementById('goto-settings-btn');
   
   generateCustomBtn = document.getElementById('generate-custom');
   customPromptInput = document.getElementById('custom-prompt');
   templateButtons = document.querySelectorAll('.template-btn');
   
-  // Check if API key is already saved
-  checkApiKey();
+  // Hide API key section (now only in settings)
+  if (apiKeySection) apiKeySection.style.display = 'none';
+
+  // Settings button navigation
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      window.location.href = 'settings.html';
+    });
+  }
   
+  // Go to settings from overlay
+  if (gotoSettingsBtn) {
+    gotoSettingsBtn.addEventListener('click', () => {
+      window.location.href = 'settings.html';
+    });
+  }
+
   // Check saved language preference
   checkLanguagePreference();
   
   // Set up event listeners
-  saveApiKeyBtn.addEventListener('click', saveApiKey);
-  
-  // API key input enhancements
-  apiKeyInput.addEventListener('input', () => {
-    if (apiKeyInput.value.trim()) {
-      apiKeyInput.classList.add('has-content');
-    } else {
-      apiKeyInput.classList.remove('has-content');
-    }
-  });
-  
-  apiKeyInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      saveApiKey();
-    }
-  });
-  
-  // Custom prompt textarea enhancements
-  customPromptInput.addEventListener('input', () => {
-    // Auto-resize the textarea
-    customPromptInput.style.height = 'auto';
-    customPromptInput.style.height = (customPromptInput.scrollHeight) + 'px';
-    
-    // Apply has-content class for styling
-    if (customPromptInput.value.trim()) {
-      customPromptInput.classList.add('has-content');
-    } else {
-      customPromptInput.classList.remove('has-content');
-    }
-  });
+  // Remove listeners for saveApiKeyBtn, apiKeyInput, etc.
   
   // Tab switching
   tabButtons.forEach(button => {
@@ -638,6 +631,23 @@ document.addEventListener('DOMContentLoaded', () => {
   customPromptInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.ctrlKey) {
       generateCustomResponse();
+    }
+  });
+
+  // Check if API key is set, else show overlay
+  chrome.storage.local.get(['gemini_api_key'], (result) => {
+    if (!result.gemini_api_key) {
+      if (noApiKeyOverlay) {
+        noApiKeyOverlay.style.display = 'flex';
+        noApiKeyOverlay.style.pointerEvents = 'auto';
+      }
+      if (featuresSection) featuresSection.classList.add('hidden');
+    } else {
+      if (noApiKeyOverlay) {
+        noApiKeyOverlay.style.display = 'none';
+        noApiKeyOverlay.style.pointerEvents = 'none';
+      }
+      if (featuresSection) featuresSection.classList.remove('hidden');
     }
   });
 });
@@ -754,23 +764,6 @@ function updateUILanguage() {
   // Update page title
   document.querySelector('h1').textContent = texts.title;
   
-  // Update API key section
-  document.querySelector('#api-key-section h2').textContent = texts.apiKeySetup;
-  document.querySelector('#api-key-section p').textContent = texts.apiKeyInstructions;
-  apiKeyInput.placeholder = texts.enterApiKey;
-  saveApiKeyBtn.textContent = texts.save;
-  
-  if (apiStatus.textContent === 'API key is set' || apiStatus.textContent === translations.english.apiKeySet || apiStatus.textContent === translations.dutch.apiKeySet) {
-    apiStatus.textContent = texts.apiKeySet;
-    apiStatus.className = 'success';
-  } else if (apiStatus.textContent === 'Please enter a valid API key' || apiStatus.textContent === translations.english.apiKeyInvalid || apiStatus.textContent === translations.dutch.apiKeyInvalid) {
-    apiStatus.textContent = texts.apiKeyInvalid;
-    apiStatus.className = 'error';
-  } else if (apiStatus.textContent === 'API key saved successfully' || apiStatus.textContent === translations.english.apiKeySaved || apiStatus.textContent === translations.dutch.apiKeySaved) {
-    apiStatus.textContent = texts.apiKeySaved;
-    apiStatus.className = 'success';
-  }
-  
   // Update tabs
   tabButtons.forEach(button => {
     const tabId = button.dataset.tab;
@@ -779,76 +772,112 @@ function updateUILanguage() {
   
   // Update tab content
   // Summarize tab
-  document.querySelector('#summarize h2').textContent = texts.summarizeTitle;
-  document.querySelector('#summarize p').textContent = texts.summarizeDesc;
-  document.querySelector('#summary-length option[value="short"]').textContent = texts.short;
-  document.querySelector('#summary-length option[value="medium"]').textContent = texts.medium;
-  document.querySelector('#summary-length option[value="long"]').textContent = texts.long;
-  generateSummaryBtn.textContent = texts.generate;
+  const summarizeH2 = document.querySelector('#summarize h2');
+  if (summarizeH2) summarizeH2.textContent = texts.summarizeTitle;
+  const summarizeDescP = document.querySelector('#summarize p');
+  if (summarizeDescP) summarizeDescP.textContent = texts.summarizeDesc;
+  const summaryLengthShort = document.querySelector('#summary-length option[value="short"]');
+  if (summaryLengthShort) summaryLengthShort.textContent = texts.short;
+  const summaryLengthMedium = document.querySelector('#summary-length option[value="medium"]');
+  if (summaryLengthMedium) summaryLengthMedium.textContent = texts.medium;
+  const summaryLengthLong = document.querySelector('#summary-length option[value="long"]');
+  if (summaryLengthLong) summaryLengthLong.textContent = texts.long;
+  if (generateSummaryBtn) generateSummaryBtn.textContent = texts.generate;
   
   // Quiz tab
-  document.querySelector('#quiz h2').textContent = texts.quizTitle;
-  document.querySelector('#quiz p').textContent = texts.quizDesc;
-  document.querySelector('#question-type option[value="multiple-choice"]').textContent = texts.multipleChoice;
-  document.querySelector('#question-type option[value="true-false"]').textContent = texts.trueFalse;
-  document.querySelector('#question-type option[value="short-answer"]').textContent = texts.shortAnswer;
-  document.querySelector('#question-type option[value="mixed"]').textContent = texts.mixed;
-  document.querySelector('#question-count').placeholder = texts.questionCount;
-  document.querySelector('#quiz-difficulty').placeholder = texts.difficulty;
-  document.querySelector('#quiz-level').placeholder = texts.level;
-  document.querySelector('#quiz-difficulty option[value="easy"]').textContent = texts.easy;
-  document.querySelector('#quiz-difficulty option[value="medium"]').textContent = texts.medium;
-  document.querySelector('#quiz-difficulty option[value="hard"]').textContent = texts.hard;
-  document.querySelector('#quiz-level option[value="primary"]').textContent = texts.primary;
-  document.querySelector('#quiz-level option[value="secondary"]').textContent = texts.secondary;
-  document.querySelector('#quiz-level option[value="university"]').textContent = texts.university;
-  generateQuizBtn.textContent = texts.generate;
+  const quizH2 = document.querySelector('#quiz h2');
+  if (quizH2) quizH2.textContent = texts.quizTitle;
+  const quizDescP = document.querySelector('#quiz p');
+  if (quizDescP) quizDescP.textContent = texts.quizDesc;
+  const questionTypeMultiple = document.querySelector('#question-type option[value="multiple-choice"]');
+  if (questionTypeMultiple) questionTypeMultiple.textContent = texts.multipleChoice;
+  const questionTypeTrueFalse = document.querySelector('#question-type option[value="true-false"]');
+  if (questionTypeTrueFalse) questionTypeTrueFalse.textContent = texts.trueFalse;
+  const questionTypeShortAnswer = document.querySelector('#question-type option[value="short-answer"]');
+  if (questionTypeShortAnswer) questionTypeShortAnswer.textContent = texts.shortAnswer;
+  const questionTypeMixed = document.querySelector('#question-type option[value="mixed"]');
+  if (questionTypeMixed) questionTypeMixed.textContent = texts.mixed;
+  const questionCount = document.querySelector('#question-count');
+  if (questionCount) questionCount.placeholder = texts.questionCount;
+  const quizDifficulty = document.querySelector('#quiz-difficulty');
+  if (quizDifficulty) quizDifficulty.placeholder = texts.difficulty;
+  const quizDifficultyEasy = document.querySelector('#quiz-difficulty option[value="easy"]');
+  if (quizDifficultyEasy) quizDifficultyEasy.textContent = texts.easy;
+  const quizDifficultyMedium = document.querySelector('#quiz-difficulty option[value="medium"]');
+  if (quizDifficultyMedium) quizDifficultyMedium.textContent = texts.medium;
+  const quizDifficultyHard = document.querySelector('#quiz-difficulty option[value="hard"]');
+  if (quizDifficultyHard) quizDifficultyHard.textContent = texts.hard;
+  if (generateQuizBtn) generateQuizBtn.textContent = texts.generate;
   
   // Explain tab
-  document.querySelector('#explain h2').textContent = texts.explainTitle;
-  document.querySelector('#explain p').textContent = texts.explainDesc;
-  document.querySelector('#topic-input').placeholder = texts.topicPlaceholder;
-  document.querySelector('#explanation-level option[value="beginner"]').textContent = texts.beginner;
-  document.querySelector('#explanation-level option[value="intermediate"]').textContent = texts.intermediate;
-  document.querySelector('#explanation-level option[value="advanced"]').textContent = texts.advanced;
-  generateExplanationBtn.textContent = texts.explain;
+  const explainH2 = document.querySelector('#explain h2');
+  if (explainH2) explainH2.textContent = texts.explainTitle;
+  const explainDescP = document.querySelector('#explain p');
+  if (explainDescP) explainDescP.textContent = texts.explainDesc;
+  const topicInput = document.querySelector('#topic-input');
+  if (topicInput) topicInput.placeholder = texts.topicPlaceholder;
+  const explanationLevelBeginner = document.querySelector('#explanation-level option[value="beginner"]');
+  if (explanationLevelBeginner) explanationLevelBeginner.textContent = texts.beginner;
+  const explanationLevelIntermediate = document.querySelector('#explanation-level option[value="intermediate"]');
+  if (explanationLevelIntermediate) explanationLevelIntermediate.textContent = texts.intermediate;
+  const explanationLevelAdvanced = document.querySelector('#explanation-level option[value="advanced"]');
+  if (explanationLevelAdvanced) explanationLevelAdvanced.textContent = texts.advanced;
+  if (generateExplanationBtn) generateExplanationBtn.textContent = texts.explain;
   
   // Suggest tab
-  document.querySelector('#suggest h2').textContent = texts.suggestTitle;
-  document.querySelector('#suggest p').textContent = texts.suggestDesc;
-  document.querySelector('#teaching-format option[value="lecture"]').textContent = texts.lecture;
-  document.querySelector('#teaching-format option[value="discussion"]').textContent = texts.discussion;
-  document.querySelector('#teaching-format option[value="activity"]').textContent = texts.activity;
-  document.querySelector('#teaching-format option[value="assessment"]').textContent = texts.assessment;
-  generateSuggestionsBtn.textContent = texts.getSuggestions;
+  const suggestH2 = document.querySelector('#suggest h2');
+  if (suggestH2) suggestH2.textContent = texts.suggestTitle;
+  const suggestDescP = document.querySelector('#suggest p');
+  if (suggestDescP) suggestDescP.textContent = texts.suggestDesc;
+  const teachingFormatLecture = document.querySelector('#teaching-format option[value="lecture"]');
+  if (teachingFormatLecture) teachingFormatLecture.textContent = texts.lecture;
+  const teachingFormatDiscussion = document.querySelector('#teaching-format option[value="discussion"]');
+  if (teachingFormatDiscussion) teachingFormatDiscussion.textContent = texts.discussion;
+  const teachingFormatActivity = document.querySelector('#teaching-format option[value="activity"]');
+  if (teachingFormatActivity) teachingFormatActivity.textContent = texts.activity;
+  const teachingFormatAssessment = document.querySelector('#teaching-format option[value="assessment"]');
+  if (teachingFormatAssessment) teachingFormatAssessment.textContent = texts.assessment;
+  if (generateSuggestionsBtn) generateSuggestionsBtn.textContent = texts.getSuggestions;
   
   // Loading
-  document.querySelector('#loading p').textContent = texts.processing;
+  const loadingP = document.querySelector('#loading p');
+  if (loadingP) loadingP.textContent = texts.processing;
   
   // Result actions
-  copyResultBtn.textContent = texts.copy;
-  downloadResultBtn.textContent = texts.download;
+  if (copyResultBtn) copyResultBtn.textContent = texts.copy;
+  if (downloadResultBtn) downloadResultBtn.textContent = texts.download;
   
   // Footer
-  document.querySelector('footer p').textContent = texts.footer;
+  const footerP = document.querySelector('footer p');
+  if (footerP) footerP.textContent = texts.footer;
   
   // Update tooltips
   updateTooltips();
   
   // Update custom tab
-  document.querySelector('#custom h2').textContent = texts.customTitle;
-  document.querySelector('#custom p').textContent = texts.customDesc;
-  document.querySelector('#custom-prompt').placeholder = texts.customPlaceholder;
-  generateCustomBtn.textContent = texts.ask;
-  document.querySelector('.template-label').textContent = texts.templateLabel;
+  const customH2 = document.querySelector('#custom h2');
+  if (customH2) customH2.textContent = texts.customTitle;
+  const customDescP = document.querySelector('#custom p');
+  if (customDescP) customDescP.textContent = texts.customDesc;
+  const customPromptInput = document.querySelector('#custom-prompt');
+  if (customPromptInput) customPromptInput.placeholder = texts.customPlaceholder;
+  if (generateCustomBtn) generateCustomBtn.textContent = texts.ask;
+  const templateLabel = document.querySelector('.template-label');
+  if (templateLabel) templateLabel.textContent = texts.templateLabel;
   
   // Update template button texts
-  document.querySelector('.template-btn[data-prompt="What are the main arguments presented in this text?"]').textContent = texts.templateMainArgs;
-  document.querySelector('.template-btn[data-prompt="Create a concept map based on this content."]').textContent = texts.templateConceptMap;
-  document.querySelector('.template-btn[data-prompt="What are the implications of this content for students?"]').textContent = texts.templateImplications;
-  document.querySelector('.template-btn[data-prompt="Identify any biases or limitations in this content."]').textContent = texts.templateBiasAnalysis;
-  document.querySelector('.template-btn[data-prompt="How could I adapt this content for different learning styles?"]').textContent = texts.templateLearningStyles;
-  document.querySelector('.template-btn[data-prompt="Create 3 reflection questions for students after studying this content."]').textContent = texts.templateReflectionQuestions;
+  const templateMainArgsBtn = document.querySelector('.template-btn[data-prompt="What are the main arguments presented in this text?"]');
+  if (templateMainArgsBtn) templateMainArgsBtn.textContent = texts.templateMainArgs;
+  const templateConceptMapBtn = document.querySelector('.template-btn[data-prompt="Create a concept map based on this content."]');
+  if (templateConceptMapBtn) templateConceptMapBtn.textContent = texts.templateConceptMap;
+  const templateImplicationsBtn = document.querySelector('.template-btn[data-prompt="What are the implications of this content for students?"]');
+  if (templateImplicationsBtn) templateImplicationsBtn.textContent = texts.templateImplications;
+  const templateBiasAnalysisBtn = document.querySelector('.template-btn[data-prompt="Identify any biases or limitations in this content."]');
+  if (templateBiasAnalysisBtn) templateBiasAnalysisBtn.textContent = texts.templateBiasAnalysis;
+  const templateLearningStylesBtn = document.querySelector('.template-btn[data-prompt="How could I adapt this content for different learning styles?"]');
+  if (templateLearningStylesBtn) templateLearningStylesBtn.textContent = texts.templateLearningStyles;
+  const templateReflectionQuestionsBtn = document.querySelector('.template-btn[data-prompt="Create 3 reflection questions for students after studying this content."]');
+  if (templateReflectionQuestionsBtn) templateReflectionQuestionsBtn.textContent = texts.templateReflectionQuestions;
 }
 
 // Update tooltips based on current language
@@ -873,124 +902,6 @@ function updateTooltips() {
     const element = document.getElementById(id);
     if (element) {
       element.setAttribute('data-tooltip', tooltips[id]);
-    }
-  });
-}
-
-// Check if API key exists in storage
-function checkApiKey() {
-  chrome.storage.local.get(['gemini_api_key'], (result) => {
-    if (result.gemini_api_key) {
-      apiKeyInput.value = '••••••••••••••••••••••••••';
-      apiKeyInput.classList.add('has-content');
-      const texts = translations[currentLanguage];
-      apiStatus.textContent = texts.apiKeySet;
-      apiStatus.className = 'success';
-      showFeaturesSection();
-    }
-  });
-}
-
-// Save API key to storage
-function saveApiKey() {
-  const apiKey = apiKeyInput.value.trim();
-  const texts = translations[currentLanguage];
-  
-  if (!apiKey) {
-    apiStatus.textContent = texts.apiKeyInvalid;
-    apiStatus.className = 'error';
-    apiKeyInput.focus();
-    shakeElement(apiKeyInput);
-    return;
-  }
-  
-  // Add loading effect
-  saveApiKeyBtn.classList.add('loading');
-  saveApiKeyBtn.disabled = true;
-  
-  // Save to Chrome storage
-  chrome.storage.local.set({ gemini_api_key: apiKey }, () => {
-    // Remove loading effect
-    saveApiKeyBtn.classList.remove('loading');
-    saveApiKeyBtn.disabled = false;
-    
-    apiStatus.textContent = texts.apiKeySaved;
-    apiStatus.className = 'success';
-    apiKeyInput.value = '••••••••••••••••••••••••••';
-    
-    // Show features with animation
-    showFeaturesSection(true);
-    
-    // Auto-clear status after 3 seconds
-    setTimeout(() => {
-      if (apiStatus.textContent === texts.apiKeySaved) {
-        apiStatus.textContent = '';
-      }
-    }, 3000);
-  });
-}
-
-// Add shake animation to element
-function shakeElement(element) {
-  element.classList.add('shake');
-  setTimeout(() => {
-    element.classList.remove('shake');
-  }, 500);
-}
-
-// Show features section after API key is set
-function showFeaturesSection(animate = false) {
-  if (animate) {
-    featuresSection.style.opacity = '0';
-    featuresSection.style.transform = 'translateY(20px)';
-    featuresSection.classList.remove('hidden');
-    
-    setTimeout(() => {
-      featuresSection.style.opacity = '1';
-      featuresSection.style.transform = 'translateY(0)';
-    }, 50);
-  } else {
-  featuresSection.classList.remove('hidden');
-  }
-}
-
-// Switch between tabs
-function switchTab(tabId) {
-  activeTab = tabId;
-  
-  // Update ARIA states
-  tabButtons.forEach(button => {
-    if (button.dataset.tab === tabId) {
-      button.setAttribute('aria-selected', 'true');
-    } else {
-      button.setAttribute('aria-selected', 'false');
-    }
-  });
-  
-  // Update active tab button
-  tabButtons.forEach(button => {
-    if (button.dataset.tab === tabId) {
-      button.classList.add('active');
-    } else {
-      button.classList.remove('active');
-    }
-  });
-  
-  // Show active tab content with enhanced animation
-  tabPanes.forEach(pane => {
-    if (pane.id === tabId) {
-      // Prepare for animation
-      pane.style.opacity = '0';
-      pane.style.transform = 'translateY(10px)';
-      pane.classList.add('active');
-      
-      // Trigger animation
-      setTimeout(() => {
-        pane.style.opacity = '1';
-        pane.style.transform = 'translateY(0)';
-      }, 50);
-    } else {
-      pane.classList.remove('active');
     }
   });
 }
@@ -1104,7 +1015,6 @@ async function generateQuiz() {
   const questionType = document.getElementById('question-type').value;
   const questionCount = document.getElementById('question-count').value;
   const quizDifficulty = document.getElementById('quiz-difficulty').value;
-  const quizLevel = document.getElementById('quiz-level').value;
   const pageContent = await getCurrentTabContent();
   
   // Create a more structured prompt using the enhanced content extraction
@@ -1133,16 +1043,23 @@ async function generateQuiz() {
   }
   
   const texts = translations[currentLanguage];
-  let prompt = texts.quizPrompt
+  const quizOptions = getQuizOptions();
+  const prompt = texts.quizPrompt
     .replace('{count}', questionCount)
     .replace('{type}', questionType)
+    .replace('{difficulty}', quizDifficulty)
+    .replace('{level}', quizOptions.level)
     .replace('{content}', structuredContent);
 
-  // Add selected difficulty and academic level to the prompt instruction
-  prompt = `All questions must be at the {difficulty} difficulty and suitable for {level} academic level.\n\n` + prompt;
-  prompt = prompt.replace('{difficulty}', quizDifficulty).replace('{level}', quizLevel);
-
   callGemini(prompt, 'quiz');
+}
+
+// Helper function to get quiz options
+function getQuizOptions() {
+  const type = document.getElementById('question-type').value;
+  const difficulty = document.getElementById('quiz-difficulty').value;
+  const level = 'university';
+  return { type, difficulty, level };
 }
 
 // Generate explanation of complex topics
@@ -1560,66 +1477,34 @@ function downloadResult() {
   }, 2000);
 }
 
-// Add the function to insert template text into custom prompt textarea
-function insertTemplate(templateText) {
-  customPromptInput.value = templateText;
-  customPromptInput.focus();
-  // Set cursor position to the end of the text
-  customPromptInput.setSelectionRange(
-    templateText.length,
-    templateText.length
-  );
-  // Trigger the input event to apply any styling for filled inputs
-  const event = new Event('input', { bubbles: true });
-  customPromptInput.dispatchEvent(event);
+// Switch between tabs and update UI
+function switchTab(tabName) {
+  // Remove 'active' class from all tab buttons and panes
+  tabButtons.forEach(btn => {
+    btn.classList.remove('active');
+    btn.setAttribute('aria-selected', 'false');
+  });
+  tabPanes.forEach(pane => {
+    pane.classList.remove('active');
+    pane.setAttribute('aria-hidden', 'true');
+  });
+
+  // Add 'active' class to the selected tab button and pane
+  const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+  const activePane = document.getElementById(tabName);
+  if (activeBtn && activePane) {
+    activeBtn.classList.add('active');
+    activeBtn.setAttribute('aria-selected', 'true');
+    activePane.classList.add('active');
+    activePane.setAttribute('aria-hidden', 'false');
+    activeTab = tabName;
+  }
 }
 
-// Add the function to generate a response based on custom prompt
-async function generateCustomResponse() {
-  const customPrompt = customPromptInput.value.trim();
-  
-  if (!customPrompt) {
-    shakeElement(customPromptInput);
-    return;
-  }
-  
-  showLoading();
-  
-  const pageContent = await getCurrentTabContent();
-  
-  // Create a structured content similar to other features
-  let structuredContent = `Title: ${pageContent.title}\n`;
-  
-  if (pageContent.metaDescription) {
-    structuredContent += `Description: ${pageContent.metaDescription}\n`;
-  }
-  
-  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
-    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
-  }
-  
-  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
-    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
-  } else {
-    structuredContent += `\nContent:\n${pageContent.text}\n`;
-  }
-  
-  // Include lists if available
-  if (pageContent.lists && pageContent.lists.length > 0) {
-    structuredContent += `\nLists:\n`;
-    pageContent.lists.forEach(list => {
-      structuredContent += `${list.type.toUpperCase()}:\n`;
-      list.items.forEach((item, index) => {
-        structuredContent += `${index + 1}. ${item}\n`;
-      });
-      structuredContent += `\n`;
-    });
-  }
-  
-  const texts = translations[currentLanguage];
-  const prompt = texts.customPrompt
-    .replace('{prompt}', customPrompt)
-    .replace('{content}', structuredContent);
-  
-  callGemini(prompt, 'custom');
+// Shake an element to draw attention
+function shakeElement(element) {
+  element.classList.add('shake');
+  setTimeout(() => {
+    element.classList.remove('shake');
+  }, 1000);
 }

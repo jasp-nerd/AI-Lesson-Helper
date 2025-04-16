@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - VU Amsterdam AI Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body { width: 500px; min-width: 500px; }
+    .settings-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .settings-header h2 { margin: 0; font-size: 20px; color: var(--vu-blue); }
+    .settings-back { cursor: pointer; color: var(--vu-blue); font-size: 18px; background: none; border: none; margin-right: 5px; }
+    .settings-section { background: rgba(242,242,242,0.5); border-radius: 8px; padding: 18px 18px 12px 18px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border-left: 3px solid var(--vu-blue); }
+    .settings-footer { margin-top: 36px; text-align: center; color: var(--vu-dark-gray); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="settings-header">
+      <button class="settings-back" id="settings-back-btn" title="Back" aria-label="Back to main popup">&#8592;</button>
+      <h2>Settings</h2>
+      <span style="font-size:22px;margin-left:auto;color:var(--vu-blue);">⚙️</span>
+    </div>
+    <div class="settings-section" id="settings-api-key-section">
+      <h3>Gemini API Key</h3>
+      <p>Change your Google Gemini API key below:</p>
+      <div class="input-group">
+        <input type="password" id="settings-api-key" placeholder="Enter your Google Gemini API key" aria-label="Google Gemini API key" autocomplete="off">
+        <button id="settings-save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
+      </div>
+      <div id="settings-api-status" role="status"></div>
+    </div>
+    <div class="settings-footer">
+      Developed for Vrije Universiteit Amsterdam
+    </div>
+  </div>
+  <script src="api.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

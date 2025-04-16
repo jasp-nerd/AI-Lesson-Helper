@@ -77,6 +77,13 @@ header:hover::after {
   width: 40%;
 }
 
+.header-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .logo {
   height: 45px;
   margin-right: 15px;
@@ -97,6 +104,7 @@ h1 {
   max-width: 320px;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: 10px;
 }
 
 h2 {
@@ -615,17 +623,37 @@ button:focus:not(:focus-visible) {
   margin-right: 5px;
 }
 
+#language-toggle-btn,
+#settings-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+#settings-btn .settings-icon {
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+  display: inline-block;
+  line-height: 1;
+}
+
 #language-toggle-btn {
-  font-size: 13px;
-  font-weight: bold;
-  padding: 6px 10px;
-  border-radius: 4px;
-  background-color: var(--vu-blue);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  font-size: 18px;
+}
+
+#language-toggle-btn:focus {
+  outline: 2px solid var(--vu-orange);
 }
 
 #language-toggle-btn::before {
@@ -659,6 +687,31 @@ button:focus:not(:focus-visible) {
 
 #language-toggle-btn.dutch:hover {
   background-color: var(--vu-orange-hover);
+}
+
+.language-settings-row { display: none; }
+
+.gear-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.2s, box-shadow 0.2s;
+  color: var(--vu-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gear-btn:hover, .gear-btn:focus {
+  background: rgba(0,119,179,0.08);
+  box-shadow: 0 2px 8px rgba(0,119,179,0.05);
+}
+
+.gear-btn:active {
+  background: rgba(0,119,179,0.18);
 }
 
 /* Loading text pulse animation */

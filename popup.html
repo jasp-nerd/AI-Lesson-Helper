@@ -18,12 +18,13 @@
     <header>
       <img src="images/icon128.png" alt="VU Amsterdam Logo" class="logo">
       <h1>AI Assistant for Teachers</h1>
-      <div class="language-toggle">
+      <div class="header-icons">
         <button id="language-toggle-btn" title="Switch language" aria-label="Switch language" data-tooltip="Change language between English and Dutch">EN</button>
+        <button id="settings-btn" title="Settings" aria-label="Settings" data-tooltip="Extension settings" class="gear-btn">⚙️</button>
       </div>
     </header>
 
-    <div id="api-key-section">
+    <div id="api-key-section" style="display:none">
       <h2>API Key Setup</h2>
       <p>Enter your Google Gemini API key to use the Gemini model:</p>
       <div class="input-group">
@@ -31,6 +32,12 @@
         <button id="save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
       </div>
       <div id="api-status" role="status"></div>
+    </div>
+
+    <div id="no-api-key-overlay" style="display:none;align-items:center;justify-content:center;flex-direction:column;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.96);z-index:9999;text-align:center;">
+      <h2 style="color:var(--vu-blue);margin-bottom:12px;">API Key Required</h2>
+      <p style="margin-bottom:18px;">Please set your Google Gemini API key in the <b>Settings</b> to use the extension.</p>
+      <button id="goto-settings-btn" style="background:var(--vu-blue);color:#fff;padding:10px 24px;border:none;border-radius:5px;cursor:pointer;font-size:15px;">Go to Settings</button>
     </div>
 
     <div id="features-section" class="hidden">
@@ -58,7 +65,7 @@
 
         <div id="quiz" class="tab-pane" role="tabpanel" aria-labelledby="tab-quiz">
           <h2>Generate Quiz Questions</h2>
-          <p>Create quiz questions based on the current page content.</p>
+          <p>Get quiz questions based on the current page content.</p>
           <div class="input-group">
             <select id="question-type" aria-label="Question type">
               <option value="multiple-choice">Multiple Choice</option>
@@ -72,18 +79,13 @@
               <option value="medium" selected>Medium</option>
               <option value="hard">Hard</option>
             </select>
-            <select id="quiz-level" aria-label="Quiz academic level">
-              <option value="university" selected>University Level</option>
-              <option value="secondary">Secondary/High School</option>
-              <option value="primary">Primary School</option>
-            </select>
             <button id="generate-quiz" data-tooltip="Generate quiz questions from page content">Generate</button>
           </div>
         </div>
 
         <div id="explain" class="tab-pane" role="tabpanel" aria-labelledby="tab-explain">
           <h2>Explain Complex Topics</h2>
-          <p>Simplify difficult concepts from the current page.</p>
+          <p>Get clear explanations of difficult concepts.</p>
           <div class="input-group">
             <input type="text" id="topic-input" placeholder="Enter specific topic or leave blank for auto-detection" aria-label="Topic to explain">
             <select id="explanation-level" aria-label="Explanation level">
