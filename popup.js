@@ -5,8 +5,8 @@ const translations = {
   english: {
     title: 'AI Assistant for Teachers',
     apiKeySetup: 'API Key Setup',
-    apiKeyInstructions: 'Enter your OpenAI API key to use the Gemini 2.0 Flash model:',
-    enterApiKey: 'Enter your OpenAI API key',
+    apiKeyInstructions: 'Enter your Google Gemini API key to use the Gemini 2.0 Flash model:',
+    enterApiKey: 'Enter your Google Gemini API key',
     save: 'Save',
     apiKeySet: 'API key is set',
     apiKeyInvalid: 'Please enter a valid API key',
@@ -245,8 +245,8 @@ Here is the content to analyze:
   dutch: {
     title: 'AI-assistent voor Docenten',
     apiKeySetup: 'API-sleutel Instellen',
-    apiKeyInstructions: 'Voer je OpenAI API-sleutel in om het Gemini 2.0 Flash model te gebruiken:',
-    enterApiKey: 'Voer je OpenAI API-sleutel in',
+    apiKeyInstructions: 'Voer je Google Gemini API-sleutel in om het Gemini 2.0 Flash model te gebruiken:',
+    enterApiKey: 'Voer je Google Gemini API-sleutel in',
     save: 'Opslaan',
     apiKeySet: 'API-sleutel is ingesteld',
     apiKeyInvalid: 'Voer een geldige API-sleutel in',
@@ -879,8 +879,8 @@ function updateTooltips() {
 
 // Check if API key exists in storage
 function checkApiKey() {
-  chrome.storage.local.get(['openai_api_key'], (result) => {
-    if (result.openai_api_key) {
+  chrome.storage.local.get(['gemini_api_key'], (result) => {
+    if (result.gemini_api_key) {
       apiKeyInput.value = '••••••••••••••••••••••••••';
       apiKeyInput.classList.add('has-content');
       const texts = translations[currentLanguage];
@@ -909,7 +909,7 @@ function saveApiKey() {
   saveApiKeyBtn.disabled = true;
   
   // Save to Chrome storage
-  chrome.storage.local.set({ openai_api_key: apiKey }, () => {
+  chrome.storage.local.set({ gemini_api_key: apiKey }, () => {
     // Remove loading effect
     saveApiKeyBtn.classList.remove('loading');
     saveApiKeyBtn.disabled = false;
@@ -1091,7 +1091,7 @@ async function generateSummary() {
     .replace('{length}', summaryLength)
     .replace('{content}', structuredContent);
   
-  callOpenAI(prompt, 'summarize');
+  callGemini(prompt, 'summarize');
   
   // Highlight key terms on the page
   highlightKeyTerms();
@@ -1142,7 +1142,7 @@ async function generateQuiz() {
   prompt = `All questions must be at the {difficulty} difficulty and suitable for {level} academic level.\n\n` + prompt;
   prompt = prompt.replace('{difficulty}', quizDifficulty).replace('{level}', quizLevel);
 
-  callOpenAI(prompt, 'quiz');
+  callGemini(prompt, 'quiz');
 }
 
 // Generate explanation of complex topics
@@ -1180,7 +1180,7 @@ async function generateExplanation() {
       .replace('{content}', structuredContent);
   }
   
-  callOpenAI(prompt, 'explain');
+  callGemini(prompt, 'explain');
   
   // If a specific topic was provided, highlight it on the page
   if (topic) {
@@ -1213,7 +1213,7 @@ async function generateSuggestions() {
     .replace('{format}', format)
     .replace('{content}', structuredContent);
   
-  callOpenAI(prompt, 'suggest');
+  callGemini(prompt, 'suggest');
 }
 
 // Highlight key terms on the page
@@ -1249,13 +1249,13 @@ async function highlightSpecificTerm(term) {
   }
 }
 
-// Call OpenAI API (Gemini 2.0 Flash)
-async function callOpenAI(prompt, feature) {
+// Call Gemini API
+async function callGemini(prompt, feature) {
   // Get API key from storage
-  chrome.storage.local.get(['openai_api_key'], async (result) => {
-    if (!result.openai_api_key) {
+  chrome.storage.local.get(['gemini_api_key'], async (result) => {
+    if (!result.gemini_api_key) {
       hideLoading();
-      resultContent.textContent = 'API key not found. Please set your OpenAI API key.';
+      resultContent.textContent = 'API key not found. Please set your Google Gemini API key.';
       shakeElement(resultContainer);
       return;
     }
@@ -1292,7 +1292,7 @@ async function callOpenAI(prompt, feature) {
       
       // Call the API using the window.GeminiAPI exported from api.js
       const response = await window.GeminiAPI.generateContent(
-        result.openai_api_key,
+        result.gemini_api_key,
         prompt, 
         options
       );
@@ -1621,5 +1621,5 @@ async function generateCustomResponse() {
     .replace('{prompt}', customPrompt)
     .replace('{content}', structuredContent);
   
-  callOpenAI(prompt, 'custom');
+  callGemini(prompt, 'custom');
 }

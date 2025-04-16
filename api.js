@@ -2,8 +2,8 @@
 // Direct implementation using REST API approach for Chrome extension compatibility
 
 /**
- * Generate content using Gemini model via direct REST API call
- * @param {string} apiKey - The Gemini API key
+ * Generate content using Google Gemini model via direct REST API call
+ * @param {string} apiKey - The Google Gemini API key
  * @param {string} prompt - The user prompt
  * @param {Object} options - Additional options
  * @returns {Promise<string>} - The generated content
@@ -28,7 +28,7 @@ async function generateContent(apiKey, prompt, options = {}) {
     // Log the request for debugging
     console.log("Request body:", JSON.stringify(requestBody));
 
-    // Make direct REST API call to Gemini
+    // Make direct REST API call to Google Gemini
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -79,15 +79,15 @@ async function generateContent(apiKey, prompt, options = {}) {
     // Extract the text from the response
     return data.candidates[0].content.parts[0].text;
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
+    console.error('Error calling Google Gemini API:', error);
     // Return a more user-friendly error message
-    throw new Error(`API Error: ${error.message || "Unknown error occurred. Please check your API key and try again."}`);
+    throw new Error(`API Error: ${error.message || "Unknown error occurred. Please check your Google Gemini API key and try again."}`);
   }
 }
 
 /**
- * Validate the API key by making a simple request
- * @param {string} apiKey - The Gemini API key to validate
+ * Validate the Google Gemini API key by making a simple request
+ * @param {string} apiKey - The Google Gemini API key to validate
  * @returns {Promise<boolean>} - Whether the API key is valid
  */
 async function validateApiKey(apiKey) {
@@ -130,7 +130,7 @@ async function validateApiKey(apiKey) {
       return false;
     }
   } catch (error) {
-    console.error('Error validating API key:', error);
+    console.error('Error validating Google Gemini API key:', error);
     return false;
   }
 }

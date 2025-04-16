@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "VU Amsterdam AI Assistant for Teachers",
   "version": "1.0",
-  "description": "An AI assistant for VU Amsterdam teachers to analyze web page content using OpenAI's Gemini 2.0 Flash model",
+  "description": "An AI assistant for VU Amsterdam teachers to analyze web page content using Google Gemini API.",
   "permissions": ["activeTab", "storage", "scripting"],
   "action": {
     "default_popup": "popup.html",
