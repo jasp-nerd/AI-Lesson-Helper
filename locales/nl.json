@@ -26,7 +26,6 @@
   "questionCount": "Aantal vragen",
   "difficulty": "Moeilijkheidsgraad",
   "easy": "Makkelijk",
-  "medium": "Gemiddeld",
   "hard": "Moeilijk",
   "explainTitle": "Complexe Onderwerpen Uitleggen",
   "explainDesc": "Vereenvoudig moeilijke concepten van de huidige pagina.",
@@ -34,7 +33,6 @@
   "beginner": "Beginner",
   "intermediate": "Gevorderd",
   "advanced": "Expert",
-  "explain": "Uitleggen",
   "suggestTitle": "Lesadviezen",
   "suggestDesc": "Krijg lestips en activiteitenideeën op basis van de inhoud van de huidige pagina.",
   "lecture": "Hoorcollege",
@@ -57,5 +55,14 @@
   "templateImplications": "Gevolgen voor Studenten",
   "templateBiasAnalysis": "Vooroordelenanalyse",
   "templateLearningStyles": "Leerstijlen",
-  "templateReflectionQuestions": "Reflectievragen"
+  "templateReflectionQuestions": "Reflectievragen",
+  "settingsTitle": "Instellingen",
+  "settingsApiKeySection": "Gemini API-sleutel",
+  "settingsApiKeyDesc": "Wijzig hieronder je Google Gemini API-sleutel:",
+  "settingsApiKeyGet": "Haal je API-sleutel op via <a href=\"https://aistudio.google.com/apikey\" target=\"_blank\">Google AI Studio</a>",
+  "settingsLanguageSection": "Taal",
+  "settingsLanguageStatusEN": "Language switched to English",
+  "settingsLanguageStatusNL": "Taal gewijzigd naar Nederlands",
+  "settingsBack": "Terug",
+  "settingsFooter": "Ontwikkeld voor Vrije Universiteit Amsterdam"
 }

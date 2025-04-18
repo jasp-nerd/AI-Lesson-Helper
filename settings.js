@@ -6,15 +6,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveApiKeyBtn = document.getElementById('settings-save-api-key');
   const apiStatus = document.getElementById('settings-api-status');
   const backBtn = document.getElementById('settings-back-btn');
+  const languageToggleBtn = document.getElementById('settings-language-toggle');
+  const languageStatus = document.getElementById('settings-language-status');
 
-  // Load current API key (mask if set)
-  chrome.storage.local.get(['gemini_api_key'], (result) => {
+  // --- TRANSLATION SUPPORT FOR SETTINGS PAGE ---
+  let settingsTranslations = {};
+  let settingsCurrentLang = 'en';
+  function getSettingsTranslation(key) {
+    return (settingsTranslations[settingsCurrentLang] && settingsTranslations[settingsCurrentLang][key]) || key;
+  }
+  async function loadSettingsTranslations(lang) {
+    let localeFile = lang === 'nl' ? 'locales/nl.json' : 'locales/en.json';
+    try {
+      const res = await fetch(localeFile);
+      settingsTranslations[lang] = await res.json();
+    } catch (e) {
+      settingsTranslations[lang] = {};
+    }
+  }
+  function updateSettingsUILanguage() {
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key && getSettingsTranslation(key)) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = getSettingsTranslation(key);
+        } else if (el.tagName === 'BUTTON') {
+          el.textContent = getSettingsTranslation(key);
+        } else {
+          // For elements containing HTML (e.g., links)
+          el.innerHTML = getSettingsTranslation(key);
+        }
+      }
+    });
+  }
+  // --- END TRANSLATION SUPPORT ---
+
+  // Load current API key (mask if set) and language
+  chrome.storage.local.get(['gemini_api_key', 'language'], async (result) => {
     if (result.gemini_api_key) {
       apiKeyInput.value = '••••••••••••••••••••••••••';
       apiKeyInput.classList.add('has-content');
       apiStatus.textContent = 'API key is set';
       apiStatus.className = 'success';
     }
+    // Set language toggle button text
+    const lang = result.language === 'nl' ? 'nl' : 'en';
+    languageToggleBtn.textContent = lang.toUpperCase();
+    languageToggleBtn.setAttribute('aria-label', lang === 'nl' ? 'Switch to English' : 'Switch to Dutch');
+    // Load and apply translations
+    settingsCurrentLang = lang;
+    await loadSettingsTranslations('en');
+    await loadSettingsTranslations('nl');
+    updateSettingsUILanguage();
   });
 
   // Save API key logic
@@ -50,6 +94,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 1200);
     });
   }
+
+  // Language toggle logic
+  languageToggleBtn.addEventListener('click', () => {
+    chrome.storage.local.get(['language'], (result) => {
+      let newLang = (result.language === 'nl') ? 'en' : 'nl';
+      chrome.storage.local.set({ language: newLang }, async () => {
+        languageToggleBtn.textContent = newLang.toUpperCase();
+        languageToggleBtn.setAttribute('aria-label', newLang === 'nl' ? 'Switch to English' : 'Switch to Dutch');
+        languageStatus.textContent = newLang === 'nl' ? getSettingsTranslation('settingsLanguageStatusNL') : getSettingsTranslation('settingsLanguageStatusEN');
+        languageStatus.className = 'success';
+        settingsCurrentLang = newLang;
+        await loadSettingsTranslations('en');
+        await loadSettingsTranslations('nl');
+        updateSettingsUILanguage();
+        setTimeout(() => { languageStatus.textContent = ''; }, 1200);
+        // Reload the page to apply language immediately
+        window.location.reload();
+      });
+    });
+  });
 
   // Add shake animation (copied from popup.js)
   function shakeElement(el) {

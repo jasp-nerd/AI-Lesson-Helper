@@ -183,7 +183,9 @@ async function switchLanguage(lang) {
   if (!translations[lang]) await loadTranslations(lang);
   currentLanguage = lang;
   updateUILanguage();
-  // Optionally, persist language choice
+  // Persist language choice in both chrome.storage.local and localStorage for compatibility
+  const chromeLang = lang === 'dutch' ? 'nl' : 'en';
+  chrome.storage.local.set({ language: chromeLang });
   localStorage.setItem('vu_extension_language', lang);
 }
 
@@ -240,19 +242,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Language: load saved or default
-  const savedLang = localStorage.getItem('vu_extension_language');
-  currentLanguage = savedLang || 'english';
-  await loadTranslations('english');
-  await loadTranslations('dutch');
-  updateUILanguage();
-
-  // Language toggle button
-  if (languageToggleBtn) {
-    languageToggleBtn.addEventListener('click', async () => {
-      const nextLang = currentLanguage === 'english' ? 'dutch' : 'english';
-      await switchLanguage(nextLang);
-    });
-  }
+  chrome.storage.local.get(['language'], async (result) => {
+    let savedLang = result.language;
+    if (!savedLang) {
+      savedLang = localStorage.getItem('vu_extension_language');
+    }
+    currentLanguage = savedLang === 'nl' ? 'dutch' : 'english';
+    await loadTranslations('english');
+    await loadTranslations('dutch');
+    updateUILanguage();
+  });
 
   // Check if API key is set, else show overlay
   chrome.storage.local.get(['gemini_api_key'], (result) => {

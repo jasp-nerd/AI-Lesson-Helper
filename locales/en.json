@@ -9,7 +9,6 @@
   "apiKeySaved": "API key saved successfully",
   "summarize": "Summarize",
   "quiz": "Quiz",
-  "explain": "Explain",
   "suggest": "Teaching",
   "summarizeTitle": "Summarize Content",
   "summarizeDesc": "Generate a concise summary of the current page for lesson planning.",
@@ -26,7 +25,6 @@
   "questionCount": "Number of questions",
   "difficulty": "Difficulty",
   "easy": "Easy",
-  "medium": "Medium",
   "hard": "Hard",
   "explainTitle": "Explain Complex Topics",
   "explainDesc": "Simplify difficult concepts from the current page.",
@@ -68,5 +66,14 @@
   "templateLearningStyles": "Learning Styles",
   "templateReflectionQuestions": "Reflection Questions",
   "customPrompt": "Answer the following request based on the content of the page, creating an educationally valuable response:\n{prompt}\n\nStructure your response with appropriate markdown formatting (headings, lists, emphasis) to enhance clarity and usability for teaching purposes.\n\nHere is the content to analyze:\n{content}",
-  "customSystemPrompt": "You are an AI assistant for teachers. Answer the user's specific question or request about the content provided. Focus on educational relevance and provide well-structured, pedagogically sound responses. Use appropriate markdown formatting (headings, bullet points, emphasis) to organize information in a way that's immediately useful in educational contexts. Prioritize creating responses that can be directly applied in teaching settings."
+  "customSystemPrompt": "You are an AI assistant for teachers. Answer the user's specific question or request about the content provided. Focus on educational relevance and provide well-structured, pedagogically sound responses. Use appropriate markdown formatting (headings, bullet points, emphasis) to organize information in a way that's immediately useful in educational contexts. Prioritize creating responses that can be directly applied in teaching settings.",
+  "settingsTitle": "Settings",
+  "settingsApiKeySection": "Gemini API Key",
+  "settingsApiKeyDesc": "Change your Google Gemini API key below:",
+  "settingsApiKeyGet": "Get your API key from <a href=\"https://aistudio.google.com/apikey\" target=\"_blank\">Google AI Studio</a>",
+  "settingsLanguageSection": "Language",
+  "settingsLanguageStatusEN": "Language switched to English",
+  "settingsLanguageStatusNL": "Taal gewijzigd naar Nederlands",
+  "settingsBack": "Back",
+  "settingsFooter": "Developed for Vrije Universiteit Amsterdam"
 }

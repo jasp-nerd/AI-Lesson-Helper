@@ -17,21 +17,28 @@
 <body>
   <div class="container">
     <div class="settings-header">
-      <button class="settings-back" id="settings-back-btn" title="Back" aria-label="Back to main popup">&#8592;</button>
-      <h2>Settings</h2>
+      <button class="settings-back" id="settings-back-btn" title="Back" aria-label="Back to main popup" data-i18n="settingsBack">&#8592;</button>
+      <h2 id="settings-title" data-i18n="settingsTitle">Settings</h2>
       <span style="font-size:22px;margin-left:auto;color:var(--vu-blue);">⚙️</span>
     </div>
     <div class="settings-section" id="settings-api-key-section">
-      <h3>Gemini API Key</h3>
-      <p>Change your Google Gemini API key below:</p>
-      <p>Get your API key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a></p>
+      <h3 id="settings-api-key-section-title" data-i18n="settingsApiKeySection">Gemini API Key</h3>
+      <p id="settings-api-key-desc" data-i18n="settingsApiKeyDesc">Change your Google Gemini API key below:</p>
+      <p id="settings-api-key-get" data-i18n="settingsApiKeyGet">Get your API key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a></p>
       <div class="input-group">
         <input type="password" id="settings-api-key" placeholder="Enter your Google Gemini API key" aria-label="Google Gemini API key" autocomplete="off">
         <button id="settings-save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
       </div>
       <div id="settings-api-status" role="status"></div>
     </div>
-    <div class="settings-footer">
+    <div class="settings-section" id="settings-language-section">
+      <h3 id="settings-language-section-title" data-i18n="settingsLanguageSection">Language</h3>
+      <div class="input-group">
+        <button id="settings-language-toggle" data-tooltip="Switch language between English and Dutch">EN</button>
+      </div>
+      <div id="settings-language-status" role="status"></div>
+    </div>
+    <div class="settings-footer" id="settings-footer" data-i18n="settingsFooter">
       Developed for Vrije Universiteit Amsterdam
     </div>
   </div>
