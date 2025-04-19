@@ -1,5 +1,11 @@
 # VU Amsterdam AI Assistant for Teachers
 
+[![Version](https://img.shields.io/github/v/release/jasp-nerd/AI-Lesson-Helper)](https://github.com/jasp-nerd/AI-Lesson-Helper/releases)
+[![License](https://img.shields.io/github/license/jasp-nerd/AI-Lesson-Helper)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/jasp-nerd/AI-Lesson-Helper)](https://github.com/jasp-nerd/AI-Lesson-Helper/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/jasp-nerd/AI-Lesson-Helper/pulls)
+
+
 A Chrome extension that leverages Google Gemini AI to help teachers extract educational value from web content. The assistant analyzes web pages and provides summaries, quiz questions, simplified explanations, and teaching suggestions to support educational activities.
 
 ![Example Image](https://i.imgur.com/9qX7e7c.png)
