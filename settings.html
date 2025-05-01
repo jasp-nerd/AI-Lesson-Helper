@@ -12,6 +12,11 @@
     .settings-back { cursor: pointer; color: var(--vu-blue); font-size: 18px; background: none; border: none; margin-right: 5px; }
     .settings-section { background: rgba(242,242,242,0.5); border-radius: 8px; padding: 18px 18px 12px 18px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border-left: 3px solid var(--vu-blue); }
     .settings-footer { margin-top: 36px; text-align: center; color: var(--vu-dark-gray); font-size: 12px; }
+    .ai-literacy-section { background: rgba(242,242,242,0.5); border-radius: 8px; padding: 18px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border-left: 3px solid #f57c00; }
+    .ai-literacy-section h3 { color: #f57c00; margin-top: 0; }
+    .ai-literacy-section a { color: #f57c00; text-decoration: none; font-weight: 500; }
+    .ai-literacy-section a:hover { text-decoration: underline; }
+    .ai-literacy-icon { font-size: 20px; margin-right: 8px; vertical-align: middle; }
   </style>
 </head>
 <body>
@@ -37,6 +42,11 @@
         <button id="settings-language-toggle" data-tooltip="Switch language between English and Dutch">EN</button>
       </div>
       <div id="settings-language-status" role="status"></div>
+    </div>
+    <div class="ai-literacy-section">
+      <h3><span class="ai-literacy-icon">🧠</span><span data-i18n="aiLiteracyTitle">AI Literacy Resources</span></h3>
+      <p data-i18n="aiLiteracyDesc">Enhance your AI teaching skills with our comprehensive resources on AI literacy, prompt engineering, and how to use this extension to its full potential.</p>
+      <p><a href="https://ai-literacy-vu.vercel.app/" target="_blank" data-i18n="aiLiteracyLink">Visit AI Literacy Portal →</a></p>
     </div>
     <div class="settings-footer" id="settings-footer" data-i18n="settingsFooter">
       Developed for Vrije Universiteit Amsterdam

@@ -1,6 +1,6 @@
 # VU Amsterdam AI Assistant for Teachers
 
-[![Version](https://img.shields.io/github/v/release/jasp-nerd/AI-Lesson-Helper)](https://github.com/jasp-nerd/AI-Lesson-Helper/releases)
+[![Star this repo](https://img.shields.io/github/stars/jasp-nerd/AI-Lesson-Helper?style=social)](https://github.com/jasp-nerd/AI-Lesson-Helper/stargazers)
 [![License](https://img.shields.io/github/license/jasp-nerd/AI-Lesson-Helper)](LICENSE)
 [![Issues](https://img.shields.io/github/issues/jasp-nerd/AI-Lesson-Helper)](https://github.com/jasp-nerd/AI-Lesson-Helper/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/jasp-nerd/AI-Lesson-Helper/pulls)
@@ -36,7 +36,7 @@ Once published:
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" using the toggle in the top-right
 4. Click "Load unpacked" button
-5. Select the extracted folder (vu_extension) and click "Open"
+5. Select the extracted folder (AI-Lesson-Helper) and click "Open"
 
 ## Setup and Usage
 

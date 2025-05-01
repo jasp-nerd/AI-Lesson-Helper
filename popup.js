@@ -316,13 +316,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Add template button event listeners
   templateButtons.forEach(button => {
     button.addEventListener('click', () => {
+      // Get the appropriate prompt based on current language
+      const promptKey = currentLanguage === 'english' ? 'data-prompt' : 'data-prompt-nl';
+      const promptText = button.getAttribute(promptKey);
+      if (promptText) {
+        customPromptInput.value = promptText;
+        // Focus on the textarea after setting the value
+        customPromptInput.focus();
+      }
+      // Add visual feedback
       addButtonClickEffect(button);
-      const prompt = currentLanguage === 'english' ? 
-        button.dataset.prompt : button.dataset.promptNl;
-      insertTemplate(prompt);
     });
   });
-  
+
   generateCustomBtn.addEventListener('click', () => {
     addButtonClickEffect(generateCustomBtn);
     generateCustomResponse();
@@ -597,9 +603,16 @@ async function generateSuggestions() {
     structuredContent += `\nContent:\n${pageContent.text}\n`;
   }
   
-  const prompt = getPromptWithLanguageSuffix('suggestPrompt')
-    .replace('{format}', format)
-    .replace('{content}', structuredContent);
+  // Use the appropriate prompt based on the format
+  let prompt;
+  if (format === 'essay') {
+    prompt = getPromptWithLanguageSuffix('essayPrompt')
+      .replace('{content}', structuredContent);
+  } else {
+    prompt = getPromptWithLanguageSuffix('suggestPrompt')
+      .replace('{format}', format)
+      .replace('{content}', structuredContent);
+  }
   
   callGemini(prompt, 'suggest');
 }
@@ -1001,3 +1014,37 @@ function updateTooltips() {
     }
   });
 }
+
+// Generate response for custom prompt
+async function generateCustomResponse() {
+  showLoading();
+  // Get the user's custom prompt
+  const prompt = customPromptInput.value.trim();
+  if (!prompt) {
+    hideLoading();
+    resultContent.textContent = currentLanguage === 'english'
+      ? 'Please enter a custom prompt.'
+      : 'Voer een aangepaste prompt in.';
+    resultContent.classList.add('error-text');
+    shakeElement(resultContainer);
+    setTimeout(() => {
+      resultContent.classList.remove('error-text');
+    }, 2000);
+    return;
+  }
+
+  // Get current page content
+  const pageContent = await getCurrentTabContent();
+  let structuredContent = `Title: ${pageContent.title}\n`;
+  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
+    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
+  }
+  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
+    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
+  } else {
+    structuredContent += `\nContent:\n${pageContent.text}\n`;
+  }
+  // Compose the full prompt for Gemini
+  const fullPrompt = `${prompt}\n\nContext:\n${structuredContent}`;
+  callGemini(fullPrompt, 'custom');
+};
