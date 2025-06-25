@@ -186,7 +186,7 @@ async function switchLanguage(lang) {
   // Persist language choice in both chrome.storage.local and localStorage for compatibility
   const chromeLang = lang === 'dutch' ? 'nl' : 'en';
   chrome.storage.local.set({ language: chromeLang });
-  localStorage.setItem('vu_extension_language', lang);
+  localStorage.setItem('vu_educationlab_extension_language', lang);
 }
 
 // On DOMContentLoaded, load default or saved language
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   chrome.storage.local.get(['language'], async (result) => {
     let savedLang = result.language;
     if (!savedLang) {
-      savedLang = localStorage.getItem('vu_extension_language');
+      savedLang = localStorage.getItem('vu_educationlab_extension_language');
     }
     currentLanguage = savedLang === 'nl' ? 'dutch' : 'english';
     await loadTranslations('english');
@@ -421,84 +421,13 @@ async function getCurrentTabContent() {
   });
 }
 
-// Generate summary of current page
-async function generateSummary() {
-  showLoading();
-  
-  const summaryLengthOption = document.getElementById('summary-length').value;
-  const pageContent = await getCurrentTabContent();
-  
-  // Define specific length requirements based on the selected option
-  let summaryLength;
-  if (currentLanguage === 'english') {
-    switch (summaryLengthOption) {
-      case 'short':
-        summaryLength = "Short (1-2 paragraphs, approximately 100-150 words total)";
-        break;
-      case 'medium':
-        summaryLength = "Medium (3-4 paragraphs, approximately 250-350 words total)";
-        break;
-      case 'long':
-        summaryLength = "Long (5+ paragraphs, approximately 500-700 words total)";
-        break;
-      default:
-        summaryLength = "Medium (3-4 paragraphs)";
-    }
-  } else {
-    // Dutch length descriptions
-    switch (summaryLengthOption) {
-      case 'short':
-        summaryLength = "Kort (1-2 alinea's, ongeveer 100-150 woorden in totaal)";
-        break;
-      case 'medium':
-        summaryLength = "Gemiddeld (3-4 alinea's, ongeveer 250-350 woorden in totaal)";
-        break;
-      case 'long':
-        summaryLength = "Lang (5+ alinea's, ongeveer 500-700 woorden in totaal)";
-        break;
-      default:
-        summaryLength = "Gemiddeld (3-4 alinea's)";
-    }
-  }
-  
-  // Create a more structured prompt using the enhanced content extraction
+// Helper function to create structured content from page content
+function createStructuredContent(pageContent) {
   let structuredContent = `Title: ${pageContent.title}\n`;
   
   if (pageContent.metaDescription) {
     structuredContent += `Description: ${pageContent.metaDescription}\n`;
   }
-  
-  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
-    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
-  }
-  
-  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
-    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
-  } else {
-    structuredContent += `\nContent:\n${pageContent.text}\n`;
-  }
-  
-  const prompt = getPromptWithLanguageSuffix('summaryPrompt')
-    .replace('{length}', summaryLength)
-    .replace('{content}', structuredContent);
-  
-  callGemini(prompt, 'summarize');
-  
-  // Highlight key terms on the page
-  highlightKeyTerms();
-}
-
-// Generate quiz questions from current page
-async function generateQuiz() {
-  showLoading();
-  
-  const questionType = document.getElementById('question-type').value;
-  const questionCount = document.getElementById('question-count').value;
-  const quizDifficulty = document.getElementById('quiz-difficulty').value;
-  const pageContent = await getCurrentTabContent();
-  
-  // Create a more structured prompt using the enhanced content extraction
-  let structuredContent = `Title: ${pageContent.title}\n`;
   
   if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
     structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
@@ -521,6 +450,41 @@ async function generateQuiz() {
       structuredContent += `\n`;
     });
   }
+  
+  return structuredContent;
+}
+
+// Generate summary of current page
+async function generateSummary() {
+  showLoading();
+  
+  const summaryLengthOption = document.getElementById('summary-length').value;
+  const pageContent = await getCurrentTabContent();
+  
+  // Create a more structured prompt using the enhanced content extraction
+  const structuredContent = createStructuredContent(pageContent);
+  
+  const prompt = getPromptWithLanguageSuffix('summaryPrompt')
+    .replace('{length}', summaryLengthOption)
+    .replace('{content}', structuredContent);
+  
+  callGemini(prompt, 'summarize');
+  
+  // Highlight key terms on the page
+  highlightKeyTerms();
+}
+
+// Generate quiz questions from current page
+async function generateQuiz() {
+  showLoading();
+  
+  const questionType = document.getElementById('question-type').value;
+  const questionCount = document.getElementById('question-count').value;
+  const quizDifficulty = document.getElementById('quiz-difficulty').value;
+  const pageContent = await getCurrentTabContent();
+  
+  // Create a more structured prompt using the enhanced content extraction
+  const structuredContent = createStructuredContent(pageContent);
   
   const quizOptions = getQuizOptions();
   const prompt = getPromptWithLanguageSuffix('quizPrompt')
@@ -550,17 +514,7 @@ async function generateExplanation() {
   const pageContent = await getCurrentTabContent();
   
   // Create a more structured prompt using the enhanced content extraction
-  let structuredContent = `Title: ${pageContent.title}\n`;
-  
-  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
-    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
-  }
-  
-  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
-    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
-  } else {
-    structuredContent += `\nContent:\n${pageContent.text}\n`;
-  }
+  const structuredContent = createStructuredContent(pageContent);
   
   let prompt;
   
@@ -591,17 +545,7 @@ async function generateSuggestions() {
   const pageContent = await getCurrentTabContent();
   
   // Create a more structured prompt using the enhanced content extraction
-  let structuredContent = `Title: ${pageContent.title}\n`;
-  
-  if (pageContent.headings && pageContent.headings.h1 && pageContent.headings.h1.length > 0) {
-    structuredContent += `Main Headings: ${pageContent.headings.h1.join(', ')}\n`;
-  }
-  
-  if (pageContent.paragraphs && pageContent.paragraphs.length > 0) {
-    structuredContent += `\nContent:\n${pageContent.paragraphs.join('\n\n')}\n`;
-  } else {
-    structuredContent += `\nContent:\n${pageContent.text}\n`;
-  }
+  const structuredContent = createStructuredContent(pageContent);
   
   // Use the appropriate prompt based on the format
   let prompt;
@@ -617,37 +561,33 @@ async function generateSuggestions() {
   callGemini(prompt, 'suggest');
 }
 
-// Highlight key terms on the page
-async function highlightKeyTerms() {
-  try {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
-      chrome.tabs.sendMessage(
-        activeTab.id,
-        { action: "clearHighlights" }
-      );
-    });
-  } catch (error) {
-    console.error('Error clearing highlights:', error);
-  }
-}
-
-// Highlight specific term on the page
-async function highlightSpecificTerm(term) {
+// Send highlight request to content script
+function sendHighlightRequest(action, text = null) {
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       chrome.tabs.sendMessage(
         activeTab.id,
         { 
-          action: "highlightText",
-          text: term
+          action: action,
+          ...(text && { text })
         }
       );
     });
   } catch (error) {
-    console.error('Error highlighting term:', error);
+    console.error(`Error with highlight request (${action}):`, error);
   }
+}
+
+// Highlight key terms on the page
+async function highlightKeyTerms() {
+  sendHighlightRequest("clearHighlights");
+}
+
+// Highlight specific term on the page
+async function highlightSpecificTerm(term) {
+  if (!term) return;
+  sendHighlightRequest("highlightText", term);
 }
 
 // Call Gemini API

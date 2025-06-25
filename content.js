@@ -1,4 +1,4 @@
-// Enhanced content script for VU Amsterdam AI Assistant
+// Enhanced content script for VU Education Lab AI Assistant
 // Runs in the context of web pages
 
 // Global variables
@@ -179,79 +179,206 @@ function clearHighlights() {
   });
 }
 
-// Function to add annotation to the page
-function addAnnotation(text, position) {
-  const annotation = document.createElement('div');
-  annotation.className = 'vu-ai-annotation';
-  annotation.textContent = text;
-  
-  // Position the annotation
-  annotation.style.position = 'absolute';
-  annotation.style.top = `${position.y}px`;
-  annotation.style.left = `${position.x}px`;
-  
-  // Style the annotation
-  annotation.style.backgroundColor = '#0077B3';
-  annotation.style.color = 'white';
-  annotation.style.padding = '8px 12px';
-  annotation.style.borderRadius = '4px';
-  annotation.style.maxWidth = '300px';
-  annotation.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-  annotation.style.zIndex = '10000';
-  
-  // Add close button
-  const closeBtn = document.createElement('button');
-  closeBtn.textContent = '×';
-  closeBtn.style.position = 'absolute';
-  closeBtn.style.top = '2px';
-  closeBtn.style.right = '5px';
-  closeBtn.style.background = 'none';
-  closeBtn.style.border = 'none';
-  closeBtn.style.color = 'white';
-  closeBtn.style.fontSize = '16px';
-  closeBtn.style.cursor = 'pointer';
-  
-  closeBtn.addEventListener('click', () => {
-    document.body.removeChild(annotation);
+// Utility functions for chrome.storage.local
+async function saveFloatingIconState(state) {
+  return new Promise(resolve => {
+    chrome.storage.local.set({ vuFloatingIconState: state }, resolve);
   });
-  
-  annotation.appendChild(closeBtn);
-  document.body.appendChild(annotation);
-  
-  return annotation;
+}
+async function getFloatingIconState() {
+  return new Promise(resolve => {
+    chrome.storage.local.get(['vuFloatingIconState'], result => {
+      resolve(result.vuFloatingIconState || null);
+    });
+  });
 }
 
 // Create floating icon
-function createFloatingIcon() {
+async function createFloatingIcon() {
   // Check if icon already exists
   if (vuFloatingIcon) {
     return vuFloatingIcon;
   }
-  
+
   // Create the floating icon
   const icon = document.createElement('button');
   icon.className = 'vu-ai-floating-icon';
-  icon.setAttribute('aria-label', 'Open VU Assistant');
-  icon.setAttribute('title', 'Open VU Amsterdam AI Assistant');
-  
+  icon.setAttribute('aria-label', 'Open VU Education Lab Assistant');
+  icon.setAttribute('title', 'Open VU Education Lab AI Assistant');
+  icon.style.transition = 'all 0.3s cubic-bezier(.4,2,.6,1)';
+  icon.style.position = 'fixed';
+  icon.style.zIndex = 10000;
+
   // Create the icon image
   const img = document.createElement('img');
   img.src = chrome.runtime.getURL('images/icon48.png');
-  img.alt = 'VU Amsterdam AI Assistant';
-  
-  // Add image to icon
+  img.alt = 'VU Education Lab AI Assistant';
+  img.style.transition = 'opacity 0.2s, width 0.2s, height 0.2s';
   icon.appendChild(img);
-  
+
   // Add click event to show draggable window
-  icon.addEventListener('click', toggleDraggableWindow);
-  
+  icon.addEventListener('click', (e) => {
+    if (icon.classList.contains('minimized')) return; // Don't open if minimized
+    toggleDraggableWindow();
+  });
+
   // Add the icon to the page
   document.body.appendChild(icon);
-  
-  // Store reference
   vuFloatingIcon = icon;
-  
+
+  // Restore position and minimized state from chrome.storage.local
+  let iconState = await getFloatingIconState();
+  if (iconState) {
+    setFloatingIconPosition(icon, iconState.left, iconState.top, iconState.edge, iconState.minimized, true);
+    if (iconState.minimized) {
+      minimizeFloatingIcon(true);
+    }
+  }
+
+  // Make draggable
+  makeFloatingIconDraggable(icon);
+
+  // Auto-minimize after inactivity
+  let minimizeTimeout;
+  function resetMinimizeTimer() {
+    clearTimeout(minimizeTimeout);
+    if (!icon.classList.contains('minimized')) {
+      minimizeTimeout = setTimeout(() => minimizeFloatingIcon(), 3000);
+    }
+  }
+  icon.addEventListener('mousemove', resetMinimizeTimer);
+  icon.addEventListener('mousedown', resetMinimizeTimer);
+  icon.addEventListener('mouseup', resetMinimizeTimer);
+  icon.addEventListener('mouseleave', resetMinimizeTimer);
+  icon.addEventListener('mouseenter', () => {
+    if (icon.classList.contains('minimized')) {
+      restoreFloatingIcon();
+    }
+    clearTimeout(minimizeTimeout);
+  });
+  icon.addEventListener('mouseleave', resetMinimizeTimer);
+  // Start timer on creation
+  resetMinimizeTimer();
+
   return icon;
+}
+
+function setFloatingIconPosition(icon, left, top, edge, minimized, skipSave) {
+  // Clamp to viewport
+  const minTop = 10;
+  const maxTop = window.innerHeight - 58;
+  top = Math.max(minTop, Math.min(maxTop, top || window.innerHeight - 68));
+  if (edge === 'left') {
+    icon.style.left = '20px';
+    icon.style.right = '';
+  } else {
+    icon.style.left = '';
+    icon.style.right = '20px';
+  }
+  icon.style.top = top + 'px';
+  icon.style.bottom = '';
+  if (typeof minimized === 'undefined') minimized = icon.classList.contains('minimized');
+  if (!skipSave) {
+    saveFloatingIconState({ left, top, edge, minimized });
+  }
+}
+
+function makeFloatingIconDraggable(icon) {
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+  let edge = 'right';
+
+  icon.onmousedown = function (e) {
+    if (icon.classList.contains('minimized')) return;
+    if (e.target.tagName === 'IMG' || e.target === icon) {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startLeft = icon.offsetLeft;
+      startTop = icon.offsetTop;
+      document.body.style.userSelect = 'none';
+      document.onmousemove = drag;
+      document.onmouseup = stopDrag;
+    }
+  };
+
+  function drag(e) {
+    if (!isDragging) return;
+    let dx = e.clientX - startX;
+    let dy = e.clientY - startY;
+    let newLeft = startLeft + dx;
+    let newTop = startTop + dy;
+    // Clamp to viewport
+    newTop = Math.max(10, Math.min(window.innerHeight - 58, newTop));
+    newLeft = Math.max(0, Math.min(window.innerWidth - 48, newLeft));
+    icon.style.left = newLeft + 'px';
+    icon.style.top = newTop + 'px';
+    icon.style.right = '';
+    icon.style.bottom = '';
+  }
+
+  function stopDrag(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    document.body.style.userSelect = '';
+    document.onmousemove = null;
+    document.onmouseup = null;
+    // Snap to nearest edge
+    let left = icon.offsetLeft;
+    let edgeToSnap = (left < window.innerWidth / 2) ? 'left' : 'right';
+    if (edgeToSnap === 'left') {
+      icon.style.left = '20px';
+      icon.style.right = '';
+      edge = 'left';
+    } else {
+      icon.style.left = '';
+      icon.style.right = '20px';
+      edge = 'right';
+    }
+    let top = icon.offsetTop;
+    setFloatingIconPosition(icon, left, top, edge);
+  }
+}
+
+function minimizeFloatingIcon(instant) {
+  if (!vuFloatingIcon) return;
+  vuFloatingIcon.classList.add('minimized');
+  vuFloatingIcon.style.width = '20px';
+  vuFloatingIcon.style.height = '20px';
+  vuFloatingIcon.style.borderRadius = '50%';
+  vuFloatingIcon.style.overflow = 'hidden';
+  vuFloatingIcon.style.opacity = '0.5';
+  vuFloatingIcon.style.background = 'var(--vu-blue)';
+  if (vuFloatingIcon.firstChild && vuFloatingIcon.firstChild.tagName === 'IMG') {
+    vuFloatingIcon.firstChild.style.opacity = '0';
+    vuFloatingIcon.firstChild.style.width = '0';
+    vuFloatingIcon.firstChild.style.height = '0';
+  }
+  // Save state
+  let left = vuFloatingIcon.offsetLeft;
+  let top = vuFloatingIcon.offsetTop;
+  let edge = (left < window.innerWidth / 2) ? 'left' : 'right';
+  setFloatingIconPosition(vuFloatingIcon, left, top, edge, true);
+}
+
+function restoreFloatingIcon() {
+  if (!vuFloatingIcon) return;
+  vuFloatingIcon.classList.remove('minimized');
+  vuFloatingIcon.style.width = '48px';
+  vuFloatingIcon.style.height = '48px';
+  vuFloatingIcon.style.borderRadius = '50%';
+  vuFloatingIcon.style.opacity = '1';
+  vuFloatingIcon.style.background = 'var(--vu-blue)';
+  if (vuFloatingIcon.firstChild && vuFloatingIcon.firstChild.tagName === 'IMG') {
+    vuFloatingIcon.firstChild.style.opacity = '1';
+    vuFloatingIcon.firstChild.style.width = '28px';
+    vuFloatingIcon.firstChild.style.height = '28px';
+  }
+  // Save state
+  let left = vuFloatingIcon.offsetLeft;
+  let top = vuFloatingIcon.offsetTop;
+  let edge = (left < window.innerWidth / 2) ? 'left' : 'right';
+  setFloatingIconPosition(vuFloatingIcon, left, top, edge, false);
 }
 
 // Create draggable window
@@ -272,7 +399,7 @@ function createDraggableWindow() {
   // Add title
   const title = document.createElement('h1');
   title.className = 'vu-ai-window-title';
-  title.textContent = 'VU Amsterdam AI Assistant';
+  title.textContent = 'VU Education Lab AI Assistant';
   
   // Add window actions
   const actions = document.createElement('div');
@@ -378,12 +505,10 @@ function makeDraggable(element, handle) {
 
 // Toggle the draggable window
 function toggleDraggableWindow() {
-  // Always (re)create window if it doesn't exist or was removed from DOM
-  if (!vuDraggableWindow || !document.body.contains(vuDraggableWindow)) {
-    vuDraggableWindow = createDraggableWindow();
+  if (!vuDraggableWindow) {
+    createDraggableWindow();
   }
-
-  // Toggle visibility
+  
   if (vuDraggableWindow.classList.contains('hidden')) {
     showDraggableWindow();
   } else {
@@ -393,24 +518,21 @@ function toggleDraggableWindow() {
 
 // Show the draggable window
 function showDraggableWindow() {
+  // Create if not exists
   if (!vuDraggableWindow) {
     createDraggableWindow();
   }
   
+  // Remove hidden class
   vuDraggableWindow.classList.remove('hidden');
   
-  // Add a slight delay to ensure the iframe is ready
-  setTimeout(() => {
-    const iframe = vuDraggableWindow.querySelector('iframe');
-    if (iframe && iframe.contentWindow) {
-      // Let the iframe know the current page content
-      const content = extractStructuredContent();
-      iframe.contentWindow.postMessage({
-        action: 'receivePageContent',
-        content: content
-      }, '*');
-    }
-  }, 500);
+  // Position window if not already positioned
+  if (!vuDraggableWindow.style.top && !vuDraggableWindow.style.left) {
+    // Default to centered position
+    vuDraggableWindow.style.top = '50%';
+    vuDraggableWindow.style.left = '50%';
+    vuDraggableWindow.style.transform = 'translate(-50%, -50%)';
+  }
 }
 
 // Hide the draggable window
@@ -470,15 +592,17 @@ function isEducationalPage() {
 }
 
 // Initialize content script
-function initialize() {
-  console.log('VU Amsterdam AI Assistant content script loaded');
-  
-  // Check if we should show the floating icon (only on educational pages)
+async function initialize() {
+  console.log('VU Education Lab AI Assistant content script loaded');
   if (isEducationalPage()) {
-    // Create the floating icon after a short delay
-    setTimeout(() => {
-      createFloatingIcon();
-    }, 1500);
+    chrome.storage.local.get(['show_floating_popup'], (result) => {
+      const showFloating = result.show_floating_popup !== false; // default true
+      if (showFloating) {
+        setTimeout(() => {
+          createFloatingIcon();
+        }, 1500);
+      }
+    });
   }
 }
 

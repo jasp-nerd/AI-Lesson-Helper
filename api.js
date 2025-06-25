@@ -1,4 +1,4 @@
-// API integration module for VU Amsterdam AI Assistant
+// API integration module for VU Education Lab AI Assistant
 // Direct implementation using REST API approach for Chrome extension compatibility
 
 /**
@@ -30,7 +30,7 @@ async function generateContent(apiKey, prompt, options = {}) {
 
     // Make direct REST API call to Google Gemini
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {

@@ -1,4 +1,4 @@
-// Settings page script for VU Amsterdam AI Assistant
+// Settings page script for VU Education Lab AI Assistant
 // Handles Gemini API key change logic
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('settings-back-btn');
   const languageToggleBtn = document.getElementById('settings-language-toggle');
   const languageStatus = document.getElementById('settings-language-status');
+  const floatingPopupToggle = document.getElementById('settings-floating-popup-toggle');
+  const floatingPopupStatus = document.getElementById('settings-floating-popup-status');
 
   // --- TRANSLATION SUPPORT FOR SETTINGS PAGE ---
   let settingsTranslations = {};
@@ -60,6 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
     await loadSettingsTranslations('nl');
     updateSettingsUILanguage();
   });
+
+  // Load floating popup setting
+  chrome.storage.local.get(['show_floating_popup'], (result) => {
+    const showFloating = result.show_floating_popup !== false; // default true
+    updateFloatingPopupToggle(showFloating);
+  });
+
+  function updateFloatingPopupToggle(showFloating) {
+    floatingPopupToggle.textContent = showFloating ? 'ON' : 'OFF';
+    floatingPopupToggle.className = showFloating ? 'settings-toggle-on' : 'settings-toggle-off';
+    floatingPopupToggle.setAttribute('aria-pressed', showFloating);
+  }
 
   // Save API key logic
   saveApiKeyBtn.addEventListener('click', saveApiKey);
@@ -124,5 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Back to popup
   backBtn.addEventListener('click', () => {
     window.location.href = 'popup.html';
+  });
+
+  floatingPopupToggle.addEventListener('click', () => {
+    const isCurrentlyOn = floatingPopupToggle.textContent === 'ON';
+    const showFloating = !isCurrentlyOn;
+    chrome.storage.local.set({ show_floating_popup: showFloating }, () => {
+      updateFloatingPopupToggle(showFloating);
+      floatingPopupStatus.textContent = showFloating ? getSettingsTranslation('settingsFloatingPopupEnabled') : getSettingsTranslation('settingsFloatingPopupDisabled');
+      floatingPopupStatus.className = showFloating ? 'success' : 'error';
+      setTimeout(() => { floatingPopupStatus.textContent = ''; }, 1200);
+    });
   });
 });

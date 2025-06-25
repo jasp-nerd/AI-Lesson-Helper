@@ -6,7 +6,7 @@ const isInIframe = window !== window.top;
 
 if (!isInIframe) return;
 
-console.log('VU Amsterdam AI Assistant running in iframe mode');
+console.log('VU Education Lab AI Assistant running in iframe mode');
 
 // Listen for messages from the parent window
 window.addEventListener('message', (event) => {

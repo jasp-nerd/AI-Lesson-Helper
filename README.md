@@ -1,4 +1,4 @@
-# VU Amsterdam AI Assistant for Teachers
+# VU Education Lab AI Assistant for Teachers
 
 [![Star this repo](https://img.shields.io/github/stars/jasp-nerd/AI-Lesson-Helper?style=social)](https://github.com/jasp-nerd/AI-Lesson-Helper/stargazers)
 [![License](https://img.shields.io/github/license/jasp-nerd/AI-Lesson-Helper)](LICENSE)
@@ -27,7 +27,7 @@ A Chrome extension that leverages Google Gemini AI to help teachers extract educ
 ### From the Chrome Web Store (Future)
 Once published:
 1. Visit the Chrome Web Store
-2. Search for "VU Amsterdam AI Assistant for Teachers"
+2. Search for "VU Education Lab AI Assistant for Teachers"
 3. Click "Add to Chrome"
 4. Follow the prompts to complete installation
 
@@ -78,4 +78,4 @@ Once published:
 
 ## Credits
 
-Developed for Vrije Universiteit Amsterdam to enhance teaching with AI assistance.
+Developed for VU Education Lab to enhance teaching with AI assistance.

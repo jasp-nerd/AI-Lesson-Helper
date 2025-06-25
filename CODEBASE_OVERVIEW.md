@@ -1,7 +1,7 @@
-# VU Amsterdam AI Assistant for Teachers - Codebase Overview
+# VU Education Lab AI Assistant for Teachers - Codebase Overview
 
 ## Project Purpose
-The VU Amsterdam AI Assistant for Teachers is a Chrome extension designed to help educators extract educational value from web content. It leverages the Google Gemini AI API to analyze web pages and provide:
+The VU Education Lab AI Assistant for Teachers is a Chrome extension designed to help educators extract educational value from web content. It leverages the Google Gemini AI API to analyze web pages and provide:
 - Content summaries for lesson planning
 - Automated quiz generation
 - Concept explanations at different educational levels

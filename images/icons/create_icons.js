@@ -1,8 +1,8 @@
-// Script to create icons for the VU Amsterdam AI Assistant extension
+// Script to create icons for the VU Education Lab AI Assistant extension
 const fs = require('fs');
 const { createCanvas } = require('canvas');
 
-// VU Amsterdam colors
+// VU Education Lab colors
 const VU_BLUE = '#0077B3';
 const VU_DARK_BLUE = '#005A87';
 const VU_WHITE = '#FFFFFF';
@@ -24,12 +24,12 @@ sizes.forEach(size => {
   ctx.lineWidth = Math.max(1, size / 32);
   ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, size - ctx.lineWidth, size - ctx.lineWidth);
   
-  // Draw "VU" text
+  // Draw "VU Education Lab" text (shorten to 'VU EdLab' for icon if needed)
   ctx.fillStyle = VU_WHITE;
-  ctx.font = `bold ${Math.floor(size * 0.5)}px Arial`;
+  ctx.font = `bold ${Math.floor(size * 0.32)}px Arial`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('VU', size / 2, size / 2);
+  ctx.fillText('VU EdLab', size / 2, size / 2);
   
   // Draw AI indicator
   const aiSize = Math.floor(size * 0.25);

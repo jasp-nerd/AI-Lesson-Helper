@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings - VU Amsterdam AI Assistant</title>
+  <title>Settings - VU Education Lab AI Assistant</title>
   <link rel="stylesheet" href="popup.css">
   <style>
     body { width: 500px; min-width: 500px; }
@@ -42,6 +42,13 @@
         <button id="settings-language-toggle" data-tooltip="Switch language between English and Dutch">EN</button>
       </div>
       <div id="settings-language-status" role="status"></div>
+    </div>
+    <div class="settings-section" id="settings-floating-popup-section">
+      <h3 id="settings-floating-popup-title" data-i18n="settingsFloatingPopupSection">Show floating popup on web pages</h3>
+      <div class="input-group">
+        <button id="settings-floating-popup-toggle" data-tooltip="Toggle floating popup">ON</button>
+      </div>
+      <div id="settings-floating-popup-status" role="status"></div>
     </div>
     <div class="ai-literacy-section">
       <h3><span class="ai-literacy-icon">🧠</span><span data-i18n="aiLiteracyTitle">AI Literacy Resources</span></h3>

@@ -1,6 +1,6 @@
-/* Content script styles for VU Amsterdam AI Assistant */
+/* Content script styles for VU Education Lab AI Assistant */
 
-/* VU Amsterdam color scheme */
+/* VU Education Lab color scheme */
 :root {
   --vu-blue: #0077B3;
   --vu-dark-blue: #005A87;
@@ -121,9 +121,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
   border: none;
   outline: none;
+  opacity: 1;
+  pointer-events: auto;
+  overflow: visible;
 }
 
 .vu-ai-floating-icon:hover {
@@ -136,10 +139,32 @@
   transform: scale(0.95);
 }
 
+.vu-ai-floating-icon.minimized {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  opacity: 0.5 !important;
+  background: var(--vu-blue) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+  overflow: hidden !important;
+  pointer-events: auto;
+}
+
+.vu-ai-floating-icon.minimized img {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  transition: opacity 0.2s, width 0.2s, height 0.2s;
+}
+
 .vu-ai-floating-icon img {
   width: 28px;
   height: 28px;
   object-fit: contain;
+  transition: opacity 0.2s, width 0.2s, height 0.2s;
 }
 
 /* Draggable Window styles */

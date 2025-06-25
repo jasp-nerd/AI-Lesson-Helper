@@ -44,7 +44,7 @@
   "processing": "Processing your request...",
   "copy": "Copy to Clipboard",
   "download": "Download",
-  "footer": "Developed for Vrije Universiteit Amsterdam",
+  "footer": "Developed for VU Education Lab",
   "summaryPrompt": "Summarize the following content for a teacher's lesson planning.\n\nLength: {length}.\nSTRICTLY adhere to the specified length requirement:\n- Short: 1-2 paragraphs (approx. 100-150 words)\n- Medium: 3-4 paragraphs (approx. 250-350 words)\n- Long: 5+ paragraphs\n\nThe summary must be structured for university-level comprehension, focusing on educational value, key concepts, and learning objectives. Use clear sections with markdown headings (##), highlight important terminology in **bold**, and ensure clarity for teaching purposes.\n\nInclude:\n- 2-3 key learning outcomes students should achieve\n- 2-3 potential discussion questions that promote critical thinking at the end\n- A bullet list for key points and concepts to enhance scannability for busy teachers\n\n{content}",
   "quizPrompt": "Create {count} {type} quiz questions based on the following content for classroom assessment.\n\nRequirements:\n- All questions must be at the university level, but use the specified university difficulty: low, medium, or high.\n- Assign a university difficulty level to each question: {difficulty}\n- Format using markdown for clarity:\n  - **Bold** for question numbers\n  - Numbered list for multiple choice options\n  - *Italics* for correct answer explanations\n\nQuestion Format:\n- Multiple Choice: 4 options, one correct answer. use ABCD\n- True/False: clearly state true or false\n- Short Answer: provide a model answer\n\nQuestions should target a range of cognitive levels (knowledge, comprehension, application, analysis) per Bloom's taxonomy, and align with specific learning objectives where possible.\n\nIMPORTANT: Strictly follow this format for each question:\n1. The question (with university difficulty in parentheses)\n2. For MC: numbered options\n3. The answer (clearly indicated)\n4. *Explanation* (in italics)\n\n{content}",
   "explainTopicPrompt": "Explain the concept of \"{topic}\" from the following content at a {level} level in a way that teachers can easily adapt for their classrooms.\nStructure your response with markdown for easy scanning and classroom use:\n\n## Simple Definition\nProvide a clear, concise definition appropriate for {level} students.\n\n## Real-World Examples and Analogies\nInclude 2-3 concrete examples or analogies that connect to students' everyday experiences.\n\n## Visual Concept\nDescribe a visual representation that teachers could quickly draw on a board, or use in a handout.\n\n## Common Misconceptions\nList 2-3 common misconceptions students have about this topic with brief corrections.\n\n## Teaching Sequence\nProvide a clear step-by-step explanation that teachers can follow when introducing this concept.\n\n## Quick Assessment\nInclude 1-2 quick formative assessment questions teachers can use to check understanding.\n\n{content}",
@@ -77,8 +77,12 @@
   "settingsLanguageStatusEN": "Language switched to English",
   "settingsLanguageStatusNL": "Taal gewijzigd naar Nederlands",
   "settingsBack": "Back",
-  "settingsFooter": "Developed for Vrije Universiteit Amsterdam",
+  "settingsFooter": "Developed for VU Education Lab",
   "aiLiteracyTitle": "AI Literacy Resources",
   "aiLiteracyDesc": "Enhance your AI teaching skills with our comprehensive resources on AI literacy, prompt engineering, and how to use this extension to its full potential.",
-  "aiLiteracyLink": "Visit AI Literacy Portal →"
+  "aiLiteracyLink": "Visit AI Literacy Portal →",
+  "settingsFloatingPopupSection": "Show floating popup on web pages",
+  "settingsFloatingPopupLabel": "Show floating popup on web pages",
+  "settingsFloatingPopupEnabled": "Floating popup enabled",
+  "settingsFloatingPopupDisabled": "Floating popup disabled"
 }

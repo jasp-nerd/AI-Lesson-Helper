@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "VU Amsterdam AI Assistant for Teachers",
-  "version": "2.1.1",
-  "description": "An AI assistant for VU Amsterdam teachers to analyze web page content using Google Gemini API.",
+  "name": "VU Education Lab AI Assistant for Teachers",
+  "version": "3.0.1",
+  "description": "An AI assistant for VU Education Lab teachers to analyze web page content using Google Gemini API.",
   "permissions": ["activeTab", "storage", "scripting"],
   "action": {
     "default_popup": "popup.html",
