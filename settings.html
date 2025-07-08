@@ -7,16 +7,193 @@
   <link rel="stylesheet" href="popup.css">
   <style>
     body { width: 500px; min-width: 500px; }
-    .settings-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .settings-header h2 { margin: 0; font-size: 20px; color: var(--vu-blue); }
-    .settings-back { cursor: pointer; color: var(--vu-blue); font-size: 18px; background: none; border: none; margin-right: 5px; }
-    .settings-section { background: rgba(242,242,242,0.5); border-radius: 8px; padding: 18px 18px 12px 18px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border-left: 3px solid var(--vu-blue); }
-    .settings-footer { margin-top: 36px; text-align: center; color: var(--vu-dark-gray); font-size: 12px; }
-    .ai-literacy-section { background: rgba(242,242,242,0.5); border-radius: 8px; padding: 18px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border-left: 3px solid #f57c00; }
-    .ai-literacy-section h3 { color: #f57c00; margin-top: 0; }
-    .ai-literacy-section a { color: #f57c00; text-decoration: none; font-weight: 500; }
-    .ai-literacy-section a:hover { text-decoration: underline; }
-    .ai-literacy-icon { font-size: 20px; margin-right: 8px; vertical-align: middle; }
+    
+    /* Settings Header */
+    .settings-header { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      margin-bottom: 24px; 
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--vu-blue);
+    }
+    .settings-header h2 { 
+      margin: 0; 
+      font-size: 20px; 
+      color: var(--vu-blue); 
+      font-weight: 600;
+    }
+    
+    /* Improved Back Button - smaller and less prominent */
+    .settings-back { 
+      cursor: pointer; 
+      color: var(--vu-dark-gray); 
+      font-size: 14px; 
+      background: rgba(0, 119, 179, 0.1); 
+      border: 1px solid rgba(0, 119, 179, 0.2);
+      border-radius: 20px;
+      padding: 6px 10px;
+      transition: all 0.2s ease;
+      font-weight: 400;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: auto;
+      height: 28px;
+    }
+    .settings-back:hover {
+      background: rgba(0, 119, 179, 0.15);
+      color: var(--vu-blue);
+      transform: translateX(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Uniform Section Styling */
+    .settings-section { 
+      background: rgba(242,242,242,0.5); 
+      border-radius: 10px; 
+      padding: 20px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
+      border-left: 3px solid var(--vu-blue);
+      transition: all 0.2s ease;
+    }
+    .settings-section:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transform: translateY(-1px);
+    }
+    .settings-section h3 {
+      color: var(--vu-dark-blue);
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .settings-section p {
+      margin-bottom: 15px;
+      color: var(--vu-dark-gray);
+      line-height: 1.5;
+    }
+    
+    /* Uniform Button Styling for Settings */
+    .settings-section .input-group button,
+    #settings-check-backend,
+    #settings-language-toggle,
+    #settings-floating-popup-toggle {
+      background-color: var(--vu-blue);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 40px;
+      text-align: center;
+    }
+    
+    .settings-section .input-group button:hover,
+    #settings-check-backend:hover,
+    #settings-language-toggle:hover,
+    #settings-floating-popup-toggle:hover {
+      background-color: var(--vu-blue-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .settings-section .input-group button:active,
+    #settings-check-backend:active,
+    #settings-language-toggle:active,
+    #settings-floating-popup-toggle:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Status Messages */
+    .settings-section [role="status"] {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      min-height: 20px;
+      transition: all 0.2s ease;
+    }
+    .settings-section [role="status"].success {
+      background: rgba(0, 153, 102, 0.1);
+      color: var(--vu-green);
+      border: 1px solid rgba(0, 153, 102, 0.2);
+    }
+    .settings-section [role="status"].error {
+      background: rgba(255, 102, 0, 0.1);
+      color: var(--vu-orange);
+      border: 1px solid rgba(255, 102, 0, 0.2);
+    }
+    
+    /* AI Literacy Section - Special styling */
+    .ai-literacy-section { 
+      background: rgba(245, 124, 0, 0.05); 
+      border-radius: 10px; 
+      padding: 20px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
+      border-left: 3px solid #f57c00;
+      transition: all 0.2s ease;
+    }
+    .ai-literacy-section:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transform: translateY(-1px);
+    }
+    .ai-literacy-section h3 { 
+      color: #f57c00; 
+      margin: 0 0 12px 0; 
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .ai-literacy-section p {
+      margin-bottom: 15px;
+      color: var(--vu-dark-gray);
+      line-height: 1.5;
+    }
+    .ai-literacy-section a { 
+      color: #f57c00; 
+      text-decoration: none; 
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: rgba(245, 124, 0, 0.1);
+    }
+    .ai-literacy-section a:hover { 
+      text-decoration: none;
+      background: rgba(245, 124, 0, 0.15);
+      transform: translateX(2px);
+    }
+    .ai-literacy-icon { 
+      font-size: 20px; 
+      margin-right: 8px; 
+      vertical-align: middle; 
+    }
+    
+    /* Footer styling */
+    footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 119, 179, 0.1);
+      text-align: center;
+    }
+    footer p {
+      color: var(--vu-dark-gray);
+      font-size: 12px;
+      margin: 0;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -26,15 +203,14 @@
       <h2 id="settings-title" data-i18n="settingsTitle">Settings</h2>
       <span style="font-size:22px;margin-left:auto;color:var(--vu-blue);">⚙️</span>
     </div>
-    <div class="settings-section" id="settings-api-key-section">
-      <h3 id="settings-api-key-section-title" data-i18n="settingsApiKeySection">Gemini API Key</h3>
-      <p id="settings-api-key-desc" data-i18n="settingsApiKeyDesc">Change your Google Gemini API key below:</p>
-      <p id="settings-api-key-get" data-i18n="settingsApiKeyGet">Get your API key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a></p>
+    <div class="settings-section" id="settings-backend-section">
+      <h3 id="settings-backend-section-title" data-i18n="settingsBackendSection">Backend Configuration</h3>
+      <p id="settings-backend-desc" data-i18n="settingsBackendDesc">The extension now uses a secure backend server. No API key setup required!</p>
+      <p id="settings-backend-info" data-i18n="settingsBackendInfo">API keys are managed securely on the server side.</p>
       <div class="input-group">
-        <input type="password" id="settings-api-key" placeholder="Enter your Google Gemini API key" aria-label="Google Gemini API key" autocomplete="off">
-        <button id="settings-save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
+        <button id="settings-check-backend" data-tooltip="Check backend server connection">Check Connection</button>
       </div>
-      <div id="settings-api-status" role="status"></div>
+      <div id="settings-backend-status" role="status"></div>
     </div>
     <div class="settings-section" id="settings-language-section">
       <h3 id="settings-language-section-title" data-i18n="settingsLanguageSection">Language</h3>
@@ -52,12 +228,12 @@
     </div>
     <div class="ai-literacy-section">
       <h3><span class="ai-literacy-icon">🧠</span><span data-i18n="aiLiteracyTitle">AI Literacy Resources</span></h3>
-      <p data-i18n="aiLiteracyDesc">Enhance your AI teaching skills with our comprehensive resources on AI literacy, prompt engineering, and how to use this extension to its full potential.</p>
-      <p><a href="https://ai-literacy-vu.vercel.app/" target="_blank" data-i18n="aiLiteracyLink">Visit AI Literacy Portal →</a></p>
+      <p data-i18n="aiLiteracyDesc">Enhance your AI teaching skills with comprehensive resources on AI literacy and prompt engineering.</p>
+      <p><a href="https://assets-us-01.kc-usercontent.com/d8b6f1f5-816c-005b-1dc1-e363dd7ce9a5/db60d995-ef49-46c7-ba04-719377d978bc/Kader%20genAI%20in%20onderwijs%20april%202025.pdf" target="_blank" data-i18n="aiLiteracyLink">Visit AI Literacy Portal →</a></p>
     </div>
-    <div class="settings-footer" id="settings-footer" data-i18n="settingsFooter">
-      Developed for Vrije Universiteit Amsterdam
-    </div>
+    <footer>
+      <p>Developed by Vrije Universiteit Amsterdam</p>
+    </footer>
   </div>
   <script src="api.js"></script>
   <script src="settings.js"></script>

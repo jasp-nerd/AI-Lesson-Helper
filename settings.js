@@ -2,9 +2,8 @@
 // Handles Gemini API key change logic
 
 document.addEventListener('DOMContentLoaded', () => {
-  const apiKeyInput = document.getElementById('settings-api-key');
-  const saveApiKeyBtn = document.getElementById('settings-save-api-key');
-  const apiStatus = document.getElementById('settings-api-status');
+  const checkBackendBtn = document.getElementById('settings-check-backend');
+  const backendStatus = document.getElementById('settings-backend-status');
   const backBtn = document.getElementById('settings-back-btn');
   const languageToggleBtn = document.getElementById('settings-language-toggle');
   const languageStatus = document.getElementById('settings-language-status');
@@ -44,14 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // --- END TRANSLATION SUPPORT ---
 
-  // Load current API key (mask if set) and language
-  chrome.storage.local.get(['gemini_api_key', 'language'], async (result) => {
-    if (result.gemini_api_key) {
-      apiKeyInput.value = '••••••••••••••••••••••••••';
-      apiKeyInput.classList.add('has-content');
-      apiStatus.textContent = 'API key is set';
-      apiStatus.className = 'success';
-    }
+  // Load language settings and check backend connection
+  chrome.storage.local.get(['language'], async (result) => {
     // Set language toggle button text
     const lang = result.language === 'nl' ? 'nl' : 'en';
     languageToggleBtn.textContent = lang.toUpperCase();
@@ -61,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     await loadSettingsTranslations('en');
     await loadSettingsTranslations('nl');
     updateSettingsUILanguage();
+    
+    // Check backend connection status
+    checkBackendConnection();
   });
 
   // Load floating popup setting
@@ -71,42 +67,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateFloatingPopupToggle(showFloating) {
     floatingPopupToggle.textContent = showFloating ? 'ON' : 'OFF';
-    floatingPopupToggle.className = showFloating ? 'settings-toggle-on' : 'settings-toggle-off';
     floatingPopupToggle.setAttribute('aria-pressed', showFloating);
+    // Apply visual styling based on state
+    if (showFloating) {
+      floatingPopupToggle.style.backgroundColor = 'var(--vu-green)';
+    } else {
+      floatingPopupToggle.style.backgroundColor = 'var(--vu-orange)';
+    }
   }
 
-  // Save API key logic
-  saveApiKeyBtn.addEventListener('click', saveApiKey);
-  apiKeyInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') saveApiKey();
-  });
+  // Backend connection checking logic
+  checkBackendBtn.addEventListener('click', checkBackendConnection);
 
-  function saveApiKey() {
-    const apiKey = apiKeyInput.value.trim();
-    if (!apiKey || apiKey === '••••••••••••••••••••••••••') {
-      apiStatus.textContent = 'Please enter a valid API key';
-      apiStatus.className = 'error';
-      apiKeyInput.focus();
-      shakeElement(apiKeyInput);
-      return;
+  async function checkBackendConnection() {
+    backendStatus.textContent = 'Checking connection...';
+    backendStatus.className = '';
+    checkBackendBtn.disabled = true;
+    checkBackendBtn.textContent = 'Checking...';
+    
+    try {
+      const isConnected = await window.GeminiAPI.validateConnection();
+      
+      if (isConnected) {
+        backendStatus.textContent = 'Backend server is connected and API key is configured!';
+        backendStatus.className = 'success';
+        checkBackendBtn.textContent = '✓ Connected';
+      } else {
+        const backendInfo = await window.GeminiAPI.getBackendStatus();
+        backendStatus.textContent = 'Backend server is reachable but API key is not configured properly.';
+        backendStatus.className = 'error';
+        checkBackendBtn.textContent = '⚠️ API Key Issue';
+      }
+    } catch (error) {
+      console.error('Backend connection check failed:', error);
+      backendStatus.textContent = 'Unable to connect to backend server. Please ensure it is running.';
+      backendStatus.className = 'error';
+      checkBackendBtn.textContent = '❌ Connection Failed';
     }
-    saveApiKeyBtn.classList.add('loading');
-    saveApiKeyBtn.disabled = true;
-    chrome.storage.local.set({ gemini_api_key: apiKey }, () => {
-      saveApiKeyBtn.classList.remove('loading');
-      saveApiKeyBtn.disabled = false;
-      apiStatus.textContent = 'API key saved successfully';
-      apiStatus.className = 'success';
-      apiKeyInput.value = '••••••••••••••••••••••••••';
-      apiKeyInput.classList.add('has-content');
+    
       setTimeout(() => {
-        if (apiStatus.textContent === 'API key saved successfully') {
-          apiStatus.textContent = '';
-        }
-        // Redirect to popup after save
-        window.location.href = 'popup.html';
-      }, 1200);
-    });
+      checkBackendBtn.disabled = false;
+      checkBackendBtn.textContent = 'Check Connection';
+    }, 3000);
   }
 
   // Language toggle logic

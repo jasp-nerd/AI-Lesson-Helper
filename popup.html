@@ -23,20 +23,16 @@
       </div>
     </header>
 
-    <div id="api-key-section" style="display:none">
-      <h2>API Key Setup</h2>
-      <p>Enter your Google Gemini API key to use the Gemini model:</p>
-      <div class="input-group">
-        <input type="password" id="api-key" placeholder="Enter your Google Gemini API key" aria-label="Google Gemini API key" autocomplete="off">
-        <button id="save-api-key" data-tooltip="Save your API key securely in the browser">Save</button>
-      </div>
-      <div id="api-status" role="status"></div>
+    <div id="backend-status-section" style="display:none">
+      <h2>Backend Status</h2>
+      <p>Checking connection to the backend server...</p>
+      <div id="backend-status" role="status"></div>
     </div>
 
     <div id="no-api-key-overlay" style="display:none;align-items:center;justify-content:center;flex-direction:column;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.96);z-index:9999;text-align:center;">
-      <h2 style="color:var(--vu-blue);margin-bottom:12px;">API Key Required</h2>
-      <p style="margin-bottom:18px;">Please set your Google Gemini API key in the <b>Settings</b> to use the extension.</p>
-      <button id="goto-settings-btn" style="background:var(--vu-blue);color:#fff;padding:10px 24px;border:none;border-radius:5px;cursor:pointer;font-size:15px;">Go to Settings</button>
+      <h2 style="color:var(--vu-blue);margin-bottom:12px;">Backend Connection Required</h2>
+      <p style="margin-bottom:18px;">Unable to connect to the backend server. Please ensure the server is running and properly configured.</p>
+      <button id="goto-settings-btn" style="background:var(--vu-blue);color:#fff;padding:10px 24px;border:none;border-radius:5px;cursor:pointer;font-size:15px;">Check Connection</button>
     </div>
 
     <div id="features-section" class="hidden">
@@ -134,8 +130,8 @@
                 data-prompt="Identify any biases or limitations in this content." 
                 data-prompt-nl="Identificeer eventuele vooroordelen of beperkingen in deze inhoud.">Bias Analysis</button>
               <button class="template-btn" 
-                data-prompt="How could I adapt this content for different learning styles?" 
-                data-prompt-nl="Hoe kan ik deze inhoud aanpassen voor verschillende leerstijlen?">Learning Styles</button>
+                data-prompt="How can I present this content using different modalities to reinforce understanding (visual, auditory, kinesthetic approaches)?" 
+                data-prompt-nl="Hoe kan ik deze inhoud presenteren met verschillende modaliteiten om begrip te versterken (visuele, auditieve, kinesthetische benaderingen)?">Other Representations</button>
               <button class="template-btn" 
                 data-prompt="Create 3 reflection questions for students after studying this content." 
                 data-prompt-nl="Maak 3 reflectievragen voor studenten na het bestuderen van deze inhoud.">Reflection Questions</button>
@@ -152,13 +148,12 @@
         <div id="result-content" aria-live="polite"></div>
         <div class="result-actions hidden">
           <button id="copy-result" data-tooltip="Copy content to clipboard">Copy to Clipboard</button>
-          <button id="download-result" data-tooltip="Download content as a text file">Download</button>
         </div>
       </div>
     </div>
 
     <footer>
-      <p>Developed for Vrije Universiteit Amsterdam</p>
+      <p>Developed by Vrije Universiteit Amsterdam</p>
     </footer>
   </div>
 

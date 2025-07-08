@@ -1,142 +1,184 @@
 // API integration module for VU Education Lab AI Assistant
-// Direct implementation using REST API approach for Chrome extension compatibility
+// Backend implementation - calls secure backend server instead of direct Gemini API
+
+// Configuration - Backend URL
+// For local development: http://localhost:3000
+// For production: Replace with your Heroku app URL
+const BACKEND_URL = 'https://vu-education-lab-backend-f20c07d5ca03.herokuapp.com'; // Change YOUR_HEROKU_APP_NAME to your actual Heroku app name
 
 /**
- * Generate content using Google Gemini model via direct REST API call
- * @param {string} apiKey - The Google Gemini API key
+ * Generate content using the backend server
  * @param {string} prompt - The user prompt
  * @param {Object} options - Additional options
  * @returns {Promise<string>} - The generated content
  */
-async function generateContent(apiKey, prompt, options = {}) {
+async function generateContent(prompt, options = {}) {
   try {
-    console.log(`Starting API request with prompt: ${prompt}`);
+    console.log(`Starting backend request with prompt: ${prompt.substring(0, 100)}...`);
 
-    // Prepare request body
+    // Validate input
+    if (!prompt || typeof prompt !== 'string') {
+      throw new Error('Invalid input: prompt is required and must be a string');
+    }
+
+    // Prepare request body for backend
     const requestBody = {
-      contents: [
-        {
-          parts: [
-            {
-              text: options.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt
-            }
-          ]
-        }
-      ]
+      prompt: prompt,
+      systemPrompt: options.systemPrompt || null,
+      feature: options.feature || 'general'
     };
 
-    // Log the request for debugging
-    // console.log("Request body:", JSON.stringify(requestBody));
+    console.log("Making request to backend:", `${BACKEND_URL}/api/generate`);
 
-    // Make direct REST API call to Google Gemini
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`,
-      {
+    // Make request to backend server
+    const response = await fetch(`${BACKEND_URL}/api/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(requestBody)
-      }
-    );
+    });
 
     // Get the raw response text for better error handling
     const responseText = await response.text();
-    console.log("Raw API response:", responseText);
+    console.log("Raw backend response:", responseText.substring(0, 200) + "...");
 
     // Try to parse the response as JSON
     let data;
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("Failed to parse API response as JSON:", parseError);
-      throw new Error(`Failed to parse API response: ${responseText.substring(0, 100)}...`);
+      console.error("Failed to parse backend response as JSON:", parseError);
+      throw new Error(`Failed to parse backend response: ${responseText.substring(0, 100)}...`);
     }
 
     // Check if response is successful
     if (!response.ok) {
-      // Enhanced error handling with detailed information
-      const errorMessage = data.error?.message || response.statusText;
-      const errorCode = data.error?.code || response.status;
-
-      console.error("API Error:", {
+      const errorMessage = data.error || response.statusText;
+      console.error("Backend Error:", {
         status: response.status,
         statusText: response.statusText,
-        errorCode,
         errorMessage,
         data
       });
 
-      throw new Error(`API Error (${errorCode}): ${errorMessage}`);
+      // Provide user-friendly error messages based on status
+      let userMessage;
+      switch (response.status) {
+        case 400:
+          userMessage = `Invalid request: ${errorMessage}`;
+          break;
+        case 429:
+          userMessage = "Too many requests. Please wait a moment and try again.";
+          break;
+        case 500:
+          userMessage = `Server error: ${errorMessage}`;
+          break;
+        case 503:
+          userMessage = "Backend server is temporarily unavailable. Please try again later.";
+          break;
+        default:
+          userMessage = `Backend error (${response.status}): ${errorMessage}`;
+      }
+
+      throw new Error(userMessage);
     }
 
     // Verify the response structure and extract the content
-    if (!data.candidates?.[0]?.content) {
-      console.error("Unexpected API response structure:", data);
-      throw new Error("Unexpected API response structure. Check console for details.");
+    if (!data.content) {
+      console.error("Unexpected backend response structure:", data);
+      throw new Error("Unexpected response structure from backend server");
     }
 
-    // Extract the text from the response
-    return data.candidates[0].content.parts[0].text;
+    console.log("Content generation successful");
+    return data.content;
+
   } catch (error) {
-    console.error('Error calling Google Gemini API:', error);
-    // Return a more user-friendly error message
-    throw new Error(`API Error: ${error.message || "Unknown error occurred. Please check your Google Gemini API key and try again."}`);
+    console.error('Error calling backend API:', error);
+    
+    // Check if it's a network error
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error(`Unable to connect to backend server. Please check if the server is running at ${BACKEND_URL}`);
+    }
+    
+    // Re-throw the error with appropriate message
+    throw new Error(error.message || "Unknown error occurred while contacting the backend server");
   }
 }
 
 /**
- * Validate the Google Gemini API key by making a simple request
- * @param {string} apiKey - The Google Gemini API key to validate
- * @returns {Promise<boolean>} - Whether the API key is valid
+ * Validate the backend connection and API key configuration
+ * @returns {Promise<boolean>} - Whether the backend is accessible and properly configured
  */
-async function validateApiKey(apiKey) {
+async function validateConnection() {
   try {
-    if (!apiKey?.trim()) {
-      console.error("Empty API key provided");
+    console.log("Validating backend connection...");
+
+    // First check if backend is reachable
+    const healthResponse = await fetch(`${BACKEND_URL}/api/health`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!healthResponse.ok) {
+      console.error("Backend health check failed:", healthResponse.status);
       return false;
     }
 
-    console.log("Validating API key...");
+    const healthData = await healthResponse.json();
+    console.log("Backend health check passed:", healthData);
 
-    // Make a simple request to check if API key is valid
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`,
-      {
+    // Then check if API key is configured on backend
+    const validateResponse = await fetch(`${BACKEND_URL}/api/validate`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
-      }
-    );
+    });
 
-    // Get the raw response for better error handling
-    const responseText = await response.text();
-    console.log("Validation response:", responseText);
-
-    if (!response.ok) {
-      console.error("API key validation failed:", response.status, responseText);
+    if (!validateResponse.ok) {
+      console.error("Backend validation check failed:", validateResponse.status);
       return false;
     }
 
-    // Try to parse the response
-    try {
-      const data = JSON.parse(responseText);
-      const isValid = !!(data.models && data.models.length > 0);
-      console.log("API key validation result:", isValid);
-      return isValid;
-    } catch (parseError) {
-      console.error("Failed to parse validation response:", parseError);
-      return false;
-    }
+    const validateData = await validateResponse.json();
+    console.log("Backend validation result:", validateData);
+
+    return validateData.valid === true;
+
   } catch (error) {
-    console.error('Error validating Google Gemini API key:', error);
+    console.error('Error validating backend connection:', error);
     return false;
+  }
+}
+
+/**
+ * Get backend configuration and status
+ * @returns {Promise<Object>} - Backend status information
+ */
+async function getBackendStatus() {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/health`);
+    if (!response.ok) {
+      throw new Error(`Backend health check failed: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error getting backend status:', error);
+    throw new Error('Backend server is not accessible');
   }
 }
 
 // Export functions for use in popup.js
 window.GeminiAPI = {
   generateContent,
-  validateApiKey
+  validateConnection,
+  getBackendStatus,
+  // Legacy compatibility - remove API key functions since they're no longer needed
+  validateApiKey: async () => {
+    console.warn('validateApiKey is deprecated - API keys are now handled by the backend');
+    return await validateConnection();
+  }
 };

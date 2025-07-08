@@ -78,4 +78,4 @@ Once published:
 
 ## Credits
 
-Developed for VU Education Lab to enhance teaching with AI assistance.
+Developed by VU Education Lab to enhance teaching with AI assistance.

@@ -1042,35 +1042,4 @@ textarea {
   opacity: 1;
 }
 
-.settings-toggle-on {
-  background-color: var(--vu-blue);
-  color: #fff;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  min-width: 64px;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: 0 2px 6px rgba(0,119,179,0.08);
-}
-.settings-toggle-on:hover {
-  background-color: var(--vu-dark-blue);
-}
-.settings-toggle-off {
-  background-color: #e0e0e0;
-  color: var(--vu-dark-gray);
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  min-width: 64px;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-.settings-toggle-off:hover {
-  background-color: #cccccc;
-}
+

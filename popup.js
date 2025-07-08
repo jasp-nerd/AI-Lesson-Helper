@@ -143,7 +143,6 @@ function updateUILanguage() {
 
   // Result actions
   if (copyResultBtn) copyResultBtn.textContent = getTranslation('copy');
-  if (downloadResultBtn) downloadResultBtn.textContent = getTranslation('download');
 
   // Footer
   const footerP = document.querySelector('footer p');
@@ -207,7 +206,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   resultActions = document.querySelector('.result-actions');
   
   copyResultBtn = document.getElementById('copy-result');
-  downloadResultBtn = document.getElementById('download-result');
   
   generateSummaryBtn = document.getElementById('generate-summary');
   generateQuizBtn = document.getElementById('generate-quiz');
@@ -234,10 +232,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   
-  // Go to settings from overlay
+  // Check connection from overlay
   if (gotoSettingsBtn) {
-    gotoSettingsBtn.addEventListener('click', () => {
-      window.location.href = 'settings.html';
+    gotoSettingsBtn.addEventListener('click', async () => {
+      // Show loading state
+      gotoSettingsBtn.textContent = 'Checking...';
+      gotoSettingsBtn.disabled = true;
+      
+      try {
+        const isConnected = await window.GeminiAPI.validateConnection();
+        if (isConnected) {
+          // Hide overlay and show features
+          if (noApiKeyOverlay) {
+            noApiKeyOverlay.style.display = 'none';
+            noApiKeyOverlay.style.pointerEvents = 'none';
+          }
+          if (featuresSection) featuresSection.classList.remove('hidden');
+          
+          gotoSettingsBtn.textContent = '✓ Connected!';
+          setTimeout(() => {
+            gotoSettingsBtn.textContent = 'Check Connection';
+            gotoSettingsBtn.disabled = false;
+          }, 2000);
+        } else {
+          // Show error state
+          gotoSettingsBtn.textContent = '❌ Failed';
+          setTimeout(() => {
+            gotoSettingsBtn.textContent = 'Check Connection';
+            gotoSettingsBtn.disabled = false;
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Connection check failed:', error);
+        gotoSettingsBtn.textContent = '❌ Error';
+        setTimeout(() => {
+          gotoSettingsBtn.textContent = 'Check Connection';
+          gotoSettingsBtn.disabled = false;
+        }, 2000);
+      }
     });
   }
 
@@ -253,10 +285,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateUILanguage();
   });
 
-  // Check if API key is set, else show overlay
-  chrome.storage.local.get(['gemini_api_key'], (result) => {
-    if (!result.gemini_api_key) {
+  // Check backend connection and show/hide overlay accordingly
+  window.GeminiAPI.validateConnection().then(isConnected => {
+    if (!isConnected) {
       if (noApiKeyOverlay) {
+        // Update the overlay text for backend connection
+        const overlayTitle = noApiKeyOverlay.querySelector('h2');
+        const overlayText = noApiKeyOverlay.querySelector('p');
+        
+        if (overlayTitle) overlayTitle.textContent = 'Backend Connection Required';
+        if (overlayText) overlayText.innerHTML = 'Unable to connect to the backend server. Please ensure the server is running and properly configured.';
+        
         noApiKeyOverlay.style.display = 'flex';
         noApiKeyOverlay.style.pointerEvents = 'auto';
       }
@@ -268,6 +307,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (featuresSection) featuresSection.classList.remove('hidden');
     }
+  }).catch(error => {
+    console.error('Error checking backend connection:', error);
+    // Default to showing the overlay if we can't check connection
+    if (noApiKeyOverlay) {
+      const overlayTitle = noApiKeyOverlay.querySelector('h2');
+      const overlayText = noApiKeyOverlay.querySelector('p');
+      
+      if (overlayTitle) overlayTitle.textContent = 'Connection Error';
+      if (overlayText) overlayText.innerHTML = 'Unable to verify backend connection. Please check the console for details.';
+      
+      noApiKeyOverlay.style.display = 'flex';
+      noApiKeyOverlay.style.pointerEvents = 'auto';
+    }
+    if (featuresSection) featuresSection.classList.add('hidden');
   });
 
   // Tab switching
@@ -303,11 +356,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   copyResultBtn.addEventListener('click', () => {
     addButtonClickEffect(copyResultBtn);
     copyResult();
-  });
-  
-  downloadResultBtn.addEventListener('click', () => {
-    addButtonClickEffect(downloadResultBtn);
-    downloadResult();
   });
   
   // Keyboard navigation
@@ -590,17 +638,8 @@ async function highlightSpecificTerm(term) {
   sendHighlightRequest("highlightText", term);
 }
 
-// Call Gemini API
+// Call Backend API (no API key needed)
 async function callGemini(prompt, feature) {
-  // Get API key from storage
-  chrome.storage.local.get(['gemini_api_key'], async (result) => {
-    if (!result.gemini_api_key) {
-      hideLoading();
-      resultContent.textContent = 'API key not found. Please set your Google Gemini API key.';
-      shakeElement(resultContainer);
-      return;
-    }
-    
     try {
       // Prepare system prompt based on feature
       let systemPrompt;
@@ -626,16 +665,11 @@ async function callGemini(prompt, feature) {
       // Set options for API call
       const options = {
         systemPrompt: systemPrompt,
-        temperature: 0.7,
-        maxTokens: 1024
+      feature: feature
       };
       
-      // Call the API using the window.GeminiAPI exported from api.js
-      const response = await window.GeminiAPI.generateContent(
-        result.gemini_api_key,
-        prompt, 
-        options
-      );
+    // Call the backend API using the window.GeminiAPI exported from api.js
+    const response = await window.GeminiAPI.generateContent(prompt, options);
       
       // Display the response with scroll effect
       displayResult(response);
@@ -644,14 +678,13 @@ async function callGemini(prompt, feature) {
       hideLoading();
       resultContent.textContent = `Error: ${error.message}`;
       resultContent.classList.add('error-text');
-      console.error('API Error:', error);
+    console.error('Backend API Error:', error);
       shakeElement(resultContainer);
       
       setTimeout(() => {
         resultContent.classList.remove('error-text');
       }, 2000);
     }
-  });
 }
 
 // Display API response with markdown formatting
@@ -848,57 +881,7 @@ function processHTMLForCopy(element) {
   return result;
 }
 
-// Download result as text file
-function downloadResult() {
-  // Create a temporary element to get the formatted text
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = resultContent.innerHTML;
-  
-  // Process the HTML to create a clean text version with proper formatting
-  const text = processHTMLForCopy(tempDiv);
-  
-  // Create two blob options: markdown and html
-  const markdownBlob = new Blob([text], { type: 'text/markdown' });
-  const htmlBlob = new Blob(['<html><head><style>body{font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px}h1{color:#0077B3}h2{color:#0077B3}h3{color:#0077B3}ul,ol{margin-left:20px}li{margin-bottom:5px}</style></head><body>' + resultContent.innerHTML + '</body></html>'], { type: 'text/html' });
-  
-  // Create multiple download options
-  const markdownUrl = URL.createObjectURL(markdownBlob);
-  const htmlUrl = URL.createObjectURL(htmlBlob);
-  
-  // Add download animation
-  downloadResultBtn.classList.add('success-action');
-  
-  // Create and trigger the markdown download
-  const a = document.createElement('a');
-  a.href = markdownUrl;
-  a.download = `${activeTab}-result.md`;
-  document.body.appendChild(a);
-  a.click();
-  
-  // Small delay before the HTML download
-  setTimeout(() => {
-    // Create and trigger the HTML download
-    const b = document.createElement('a');
-    b.href = htmlUrl;
-    b.download = `${activeTab}-result.html`;
-    document.body.appendChild(b);
-    b.click();
-    document.body.removeChild(b);
-    URL.revokeObjectURL(htmlUrl);
-  }, 500);
-  
-  document.body.removeChild(a);
-  URL.revokeObjectURL(markdownUrl);
-  
-  // Show success feedback
-  const originalText = downloadResultBtn.textContent;
-  downloadResultBtn.textContent = '✓ Downloaded';
-  
-  setTimeout(() => {
-    downloadResultBtn.classList.remove('success-action');
-    downloadResultBtn.textContent = originalText;
-  }, 2000);
-}
+
 
 // Switch between tabs and update UI
 function switchTab(tabName) {
@@ -942,7 +925,6 @@ function updateTooltips() {
     'generate-explanation': currentLanguage === 'english' ? 'Get explanations of complex topics' : 'Krijg uitleg over complexe onderwerpen',
     'generate-suggestions': currentLanguage === 'english' ? 'Get teaching activity suggestions' : 'Krijg suggesties voor lesactiviteiten',
     'copy-result': currentLanguage === 'english' ? 'Copy content to clipboard' : 'Kopieer inhoud naar klembord',
-    'download-result': currentLanguage === 'english' ? 'Download content as a text file' : 'Download inhoud als tekstbestand',
     'generate-custom': currentLanguage === 'english' ? 'Generate response using your custom prompt' : 'Genereer een antwoord met je aangepaste prompt'
   };
   

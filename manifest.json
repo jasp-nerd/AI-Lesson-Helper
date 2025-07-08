@@ -1,9 +1,12 @@
 {
   "manifest_version": 3,
   "name": "VU Education Lab AI Assistant for Teachers",
-  "version": "3.0.1",
-  "description": "An AI assistant for VU Education Lab teachers to analyze web page content using Google Gemini API.",
+  "version": "3.1.0",
+  "description": "An AI assistant for VU teachers to analyze web page content using a secure backend server with Google Gemini API.",
   "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": [
+    "https://*.herokuapp.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
