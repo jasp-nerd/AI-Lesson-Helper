@@ -1,81 +1,135 @@
 # VU Education Lab AI Assistant for Teachers
 
-[![Star this repo](https://img.shields.io/github/stars/jasp-nerd/AI-Lesson-Helper?style=social)](https://github.com/jasp-nerd/AI-Lesson-Helper/stargazers)
 [![License](https://img.shields.io/github/license/jasp-nerd/AI-Lesson-Helper)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/jasp-nerd/AI-Lesson-Helper)](https://github.com/jasp-nerd/AI-Lesson-Helper/issues)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/jasp-nerd/AI-Lesson-Helper/pulls)
 
+A Chrome extension that leverages Google Gemini AI to help VU teachers extract educational value from web content. The assistant analyzes web pages through a secure backend server and provides summaries, quiz questions, simplified explanations, and teaching suggestions to support educational activities.
 
-A Chrome extension that leverages Google Gemini AI to help teachers extract educational value from web content. The assistant analyzes web pages and provides summaries, quiz questions, simplified explanations, and teaching suggestions to support educational activities.
-
-![Example Image](https://i.imgur.com/9qX7e7c.png)
+![VU Education Lab AI Assistant](https://i.imgur.com/9qX7e7c.png)
 
 ## Features
 
-- **Summarize**: Generate concise summaries of web pages for lesson planning with customizable length options (Short, Medium, Long).
-- **Quiz**: Create quiz questions based on the current page content with different question types (Multiple Choice, True/False, Short Answer, Mixed) and difficulty/level settings.
-- **Explain**: Simplify difficult concepts from web content for different educational levels (Beginner, Intermediate, Advanced).
-- **Teaching**: Get teaching tips and activity ideas based on web content for different formats (Lecture, Discussion, Activity, Assessment).
-- **Key Term Highlighting**: Highlights important terms directly on the web page.
-- **Export Options**: Copy results to clipboard or download as text files.
-- **Intelligent Content Extraction**: Automatically identifies headings, paragraphs, and lists from web pages.
+- **Summarize**: Generate concise summaries of web pages for lesson planning with customizable length options (Short, Medium, Long)
+- **Quiz**: Create quiz questions based on current page content with different types (Multiple Choice, True/False, Short Answer, Mixed) and difficulty levels
+- **Explain**: Simplify difficult concepts from web content for different educational levels (Beginner, Intermediate, Advanced)
+- **Teaching**: Get teaching tips and activity ideas based on web content for various formats (Lecture, Discussion, Activity, Assessment, Essay)
+- **Custom Prompts**: Ask any question about the current page content with pre-built templates
+- **Multilingual Support**: Available in English and Dutch
+- **Content Export**: Copy results to clipboard for easy integration into lesson plans
+- **Intelligent Content Extraction**: Automatically identifies and processes headings, paragraphs, and lists from web pages
+- **Floating Popup**: Optional floating popup for quick access on any webpage
 
-![Example Image](https://i.imgur.com/J72b6Zd.png)
+![Extension Interface](https://i.imgur.com/J72b6Zd.png)
 
 ## Installation
 
-### From the Chrome Web Store (Future)
-Once published:
+### From the Chrome Web Store
 1. Visit the Chrome Web Store
 2. Search for "VU Education Lab AI Assistant for Teachers"
 3. Click "Add to Chrome"
 4. Follow the prompts to complete installation
 
-### Direct Installation (Developer Mode)
+### Manual Installation (Developer Mode)
 1. Download and extract the extension files
 2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" using the toggle in the top-right
+3. Enable "Developer mode" using the toggle in the top-right corner
 4. Click "Load unpacked" button
-5. Select the extracted folder (AI-Lesson-Helper) and click "Open"
+5. Select the extension folder and click "Open"
 
 ## Setup and Usage
 
-### Initial Setup
-1. Click the extension icon in your Chrome toolbar.
-2. Enter your Google Gemini API key and click "Save".
-   - Your API key is required to use the Gemini model via API.
-   - The key is stored locally in your browser and only used for API requests.
+### Getting Started
+1. Click the extension icon in your Chrome toolbar
+2. The extension connects automatically to our secure backend server
+3. No API key setup required - everything is handled securely on the server side
 
 ### Using the Extension
-1. Navigate to any webpage (works best on educational or informational pages).
-2. Click the extension icon to open the popup.
-3. Select one of the tabs:
-   - **Summarize**: Generate content summaries.
-   - **Quiz**: Create quiz questions.
-   - **Explain**: Get simplified explanations.
-   - **Teaching**: Receive teaching suggestions.
-4. Configure options (length, format, difficulty, etc.).
-5. Click the appropriate "Generate" button.
-6. View the results, then copy or download as needed.
+1. Navigate to any educational or informational webpage
+2. Click the extension icon to open the popup
+3. Choose from five main features:
+   - **Summarize**: Generate content summaries with length options
+   - **Quiz**: Create quiz questions with customizable types and difficulty
+   - **Explain**: Get simplified explanations for complex topics
+   - **Teaching**: Receive pedagogical suggestions and activity ideas
+   - **Custom**: Use your own prompts or select from templates
 
-## Privacy
-- Your Google Gemini API key is only stored locally in your browser and never shared externally except for making requests to the Gemini API.
-- No user data is collected or transmitted elsewhere.
+4. Configure your preferences (length, difficulty, format, etc.)
+5. Click "Generate" to process the content
+6. Review the AI-generated results
+7. Copy content to clipboard for use in your lesson plans
 
-## Development
+### Settings
+Access the settings page to:
+- Switch between English and Dutch interface
+- Toggle the floating popup feature
+- Check backend connection status
+- Access AI literacy resources
 
-### Project Structure
-- `manifest.json`: Extension configuration
-- `popup.html`, `popup.js`, `popup.css`: User interface files (popup window)
-- `content.js`, `content.css`: Web page interaction and content extraction
-- `background.js`: Background processes
-- `api.js`: Handles communication with the Google Gemini API
+## Features in Detail
 
-### Requirements
-- Chrome Browser
-- Google Gemini API key
-- Internet connection for API communication
+### Summarize
+- **Short**: 1-2 paragraph summaries
+- **Medium**: 3-4 paragraph summaries  
+- **Long**: 5+ paragraph detailed summaries
+- Formatted with markdown for easy classroom use
+
+### Quiz Generation
+- **Multiple Choice**: Traditional A, B, C, D questions
+- **True/False**: Simple binary questions
+- **Short Answer**: Open-ended response questions
+- **Mixed**: Combination of all types
+- Adjustable difficulty levels and question counts
+
+### Explain Topics
+- Automatically detects complex concepts on the page
+- Manual topic input for specific explanations
+- Three complexity levels: Beginner, Intermediate, Advanced
+- Includes practical applications and teaching tips
+
+### Teaching Suggestions
+- **Lecture**: Structured presentation ideas
+- **Discussion**: Conversation starters and debate topics
+- **Activity**: Interactive classroom exercises
+- **Assessment**: Evaluation strategies
+- **Essay**: Writing prompts and assignment ideas
+
+### Custom Prompts
+Pre-built templates include:
+- Main Arguments Analysis
+- Concept Mapping
+- Student Implications
+- Bias Analysis
+- Multi-modal Representations
+- Reflection Questions
+
+## Privacy & Security
+
+- **No Data Collection**: No personal data is stored or transmitted
+- **Secure Backend**: All AI processing happens on our secure servers
+- **Local Storage Only**: Extension preferences stored locally in your browser
+- **No API Keys Required**: No need to manage or expose personal API credentials
+
+## Technical Details
+
+### Browser Compatibility
+- Chrome 88+ (Manifest V3 compatible)
+- Internet connection required for AI processing
+
+### Backend Architecture
+- Secure Express.js backend server
+- Google Gemini AI integration
+- Deployed on Heroku for reliability
+- Rate limiting and error handling
+
+## Support
+
+For questions, issues, or feature requests:
+- Email: onderwijswerkplaats@vu.nl
+- Documentation: Extension settings page includes AI literacy resources
+
+## License
+
+This project is licensed under the terms specified in the LICENSE file.
 
 ## Credits
 
-Developed by VU Education Lab to enhance teaching with AI assistance.
+Developed by **Vrije Universiteit Amsterdam Education Lab** to enhance teaching with responsible AI assistance.
